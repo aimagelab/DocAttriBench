@@ -10,3 +10,6 @@
     <img src="https://img.shields.io/badge/🤗-HF%20Collection-yellow.svg" alt="HF Collection">
   </a>
 </p>
+
+## 📢 Latest Updates
+  - [2026/08/17] Repo work in progress!
