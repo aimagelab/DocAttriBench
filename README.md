@@ -13,3 +13,21 @@
 
 ## 📢 Latest Updates
   - [2026/08/17] Repo work in progress!
+
+## Overview
+
+## Table of Contents
+
+## Enviroment Setup
+
+The following code was tested using:
+- Python 3.10
+- CUDA 12.6
+- vLLM
+
+For training and Inference we used a single conda enviroment:
+- dab
+
+## Dataset
+
+## Models
