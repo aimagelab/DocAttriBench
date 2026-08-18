@@ -46,15 +46,10 @@ def get_model_class_and_family(base_model_name: str):
         from transformers import Qwen3VLForConditionalGeneration
 
         return Qwen3VLForConditionalGeneration, "qwen3"
-    internvl_names = ("internvl3_5", "internvl3.5", "internvl3-5")
-    if any(name in model_name for name in internvl_names):
-        from transformers import InternVLForConditionalGeneration
-
-        return InternVLForConditionalGeneration, "internvl3.5"
 
     raise ValueError(
         "Unsupported base model. Expected a model path/name containing "
-        "'Qwen2.5', 'Qwen3', or 'InternVL3_5', but received: "
+        "'Qwen2.5' or 'Qwen3', but received: "
         f"{base_model_name}"
     )
 
@@ -317,33 +312,6 @@ def qwen_2_5_image_scaler(
         resized_w = int(math.ceil(resized_w / 28) * 28)
         resized_h = int(math.ceil(resized_h / 28) * 28)
 
-    img = img.resize((resized_w, resized_h))
-
-    return img, resized_w, resized_h
-
-
-def internvl_image_scaler(
-    img: Image.Image,
-    target_size: int = 1024,
-    min_pixels: int = 3136,
-    max_pixels: int = 12845056,
-) -> Tuple[Image.Image, int, int]:
-    w, h = img.size
-
-    ratio = target_size / max(w, h)
-    resized_w, resized_h = w * ratio, h * ratio
-    pixels = resized_w * resized_h
-
-    if pixels > max_pixels:
-        pixel_ratio = math.sqrt(max_pixels / pixels)
-        resized_w *= pixel_ratio
-        resized_h *= pixel_ratio
-    elif pixels < min_pixels:
-        pixel_ratio = math.sqrt(min_pixels / pixels)
-        resized_w *= pixel_ratio
-        resized_h *= pixel_ratio
-
-    resized_w, resized_h = round(resized_w), round(resized_h)
     img = img.resize((resized_w, resized_h))
 
     return img, resized_w, resized_h
@@ -617,13 +585,7 @@ def prepare_dataset(dataset_dir):
     return datasets
 
 
-def load_image(
-    image_path: str,
-    target_size: int = 1024,
-    max_pixel_count: int = 4000,
-    sample_img_size: bool = False,
-    model_family: str = "qwen2.5",
-) -> Tuple[Image.Image, int, int]:
+def load_image(image_path: str, target_size: int = 1024, max_pixel_count: int = 4000, sample_img_size: bool = False) -> Tuple[Image.Image, int, int]:
     with Image.open(image_path) as img_tmp:
         img = img_tmp.copy()
 
@@ -637,12 +599,7 @@ def load_image(
         extra_dim = 0
         target_size += extra_dim
 
-    image_scaler = (
-        internvl_image_scaler
-        if model_family == "internvl3.5"
-        else qwen_2_5_image_scaler
-    )
-    img, w, h = image_scaler(img, round(target_size), max_pixels=max_pixel_count)
+    img, w, h = qwen_2_5_image_scaler(img, round(target_size), max_pixels=max_pixel_count)
 
     return img, w, h
 
@@ -655,13 +612,7 @@ def prepare_messages(input_dict, max_pixel_count, sample_img_size, model_family)
     user_template = TRAINING_TEMPLATES[template_name][pos_neg]["user_template"]
     assistant_template = TRAINING_TEMPLATES[template_name][pos_neg]["assistant_template"]
 
-    image, w, h = load_image(
-        data["image_path"],
-        target_size=1024,
-        max_pixel_count=max_pixel_count,
-        sample_img_size=sample_img_size,
-        model_family=model_family,
-    )
+    image, w, h = load_image(data["image_path"], target_size=1024, max_pixel_count=max_pixel_count, sample_img_size=sample_img_size)
 
     if model_family == "qwen2.5":
         data["box_str"] = [box_to_string(standardize_box(box, w, h)) for box in data['bbox']]
@@ -709,33 +660,20 @@ def custom_collator(batch, processor, collator_args: Dict[str, Any], sample_img_
     text = [processor.apply_chat_template(
         ith_m, tokenize=False, add_generation_prompt=False
     ) for ith_m in messages]
-    if collator_args["model_family"] == "internvl3.5":
-        inputs = processor(
-            text=text,
-            images=images,
-            videos=None,
-            padding="longest",
-            return_tensors="pt",
-            max_length=collator_args["max_length"],
-            truncation=collator_args["truncation"],
-        )
-    else:
-        image_inputs, video_inputs = process_vision_info(messages)
-        inputs = processor(
-            text=text,
-            images=image_inputs,
-            videos=video_inputs,
-            padding="longest",
-            # return_tensors="pt",
-            max_length=collator_args["max_length"],
-            truncation=collator_args["truncation"],
-        )
+    image_inputs, video_inputs = process_vision_info(messages)
+
+    inputs = processor(
+        text=text,
+        images=image_inputs,
+        videos=video_inputs,
+        padding="longest",
+        # return_tensors="pt",
+        max_length=collator_args["max_length"],
+        truncation=collator_args["truncation"],
+    )
 
     labels = []
     for input_ids, attn in zip(inputs["input_ids"], inputs["attention_mask"]):
-        if isinstance(input_ids, torch.Tensor):
-            input_ids = input_ids.tolist()
-            attn = attn.tolist()
         assistant_idx = input_ids.index(processor.tokenizer.encode("assistant")[0])
         label = [-100] * len(input_ids)
         label[assistant_idx + 1 :] = input_ids[assistant_idx + 1 :]
@@ -860,10 +798,7 @@ def main():
     # ---- Loading Processor ----
     # used for validation loader and other stuff
 
-    processor_kwargs = (
-        {"trust_remote_code": True} if model_family == "internvl3.5" else {}
-    )
-    processor = AutoProcessor.from_pretrained(BASE_MODEL_NAME, **processor_kwargs)
+    processor = AutoProcessor.from_pretrained(BASE_MODEL_NAME)
 
     # ---- setting determinism for dataloaders ----
 
@@ -914,10 +849,7 @@ def main():
 
     logging.info("************************ START OF RUN ************************")
 
-    attn_mode = "flash_attention_2" if model_family == "internvl3.5" else "sdpa"
-    model_kwargs = (
-        {"trust_remote_code": True} if model_family == "internvl3.5" else {}
-    )
+    attn_mode = "sdpa"
 
     logging.info("Loading model ...")
     base_model = model_class.from_pretrained(
@@ -925,7 +857,6 @@ def main():
         dtype=torch.bfloat16,
         attn_implementation=attn_mode,
         device_map="auto",
-        **model_kwargs,
     )
     base_model.use_cache=False
     base_model.gradient_checkpointing_enable()
@@ -974,7 +905,7 @@ def main():
                 bias=args.lora_bias,
                 target_modules=args.lora_target_modules,
                 modules_to_save=args.lora_modules_to_save,
-                task_type=None if model_family == "internvl3.5" else "CAUSAL_LM",
+                task_type="CAUSAL_LM",
             )
             model = get_peft_model(base_model, lora_config)
             logging.info("Initialized new LoRA adapters.")
