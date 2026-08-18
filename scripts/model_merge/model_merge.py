@@ -1,10 +1,15 @@
 import argparse
 import torch
+import os
 
 from transformers import (
     AutoTokenizer,
     AutoProcessor,
+    AutoModel,
     Qwen2VLForConditionalGeneration,
+    Qwen2_5_VLForConditionalGeneration,
+    Qwen3VLForConditionalGeneration,
+    InternVLForConditionalGeneration,
 )
 from peft import PeftModel
 
@@ -45,12 +50,43 @@ def main():
     processor = AutoProcessor.from_pretrained(BASE_MODEL, trust_remote_code=True)
 
     # 2. Carica modello base
-    model = Qwen2VLForConditionalGeneration.from_pretrained(
-        BASE_MODEL,
-        dtype=torch.float16,
-        device_map="auto",
-        trust_remote_code=True,
-    )
+    # Qwen2 
+    if "Qwen2-VL-6B-Instruct" == os.path.basename(BASE_MODEL):
+        print(f"{os.path.basename(BASE_MODEL)} found!")
+        model = Qwen2VLForConditionalGeneration.from_pretrained(
+            BASE_MODEL,
+            dtype=torch.bfloat16,
+            device_map="auto",
+            trust_remote_code=True,
+        )
+    elif "Qwen2.5-VL-7B-Instruct" == os.path.basename(BASE_MODEL):
+        print(f"{os.path.basename(BASE_MODEL)} found!")
+        model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
+            BASE_MODEL,
+            dtype=torch.bfloat16,
+            device_map="auto",
+            trust_remote_code=True,
+        )
+    elif "Qwen3-VL-8B-Instruct" == os.path.basename(BASE_MODEL):
+        print(f"{os.path.basename(BASE_MODEL)} found!")
+        model = Qwen3VLForConditionalGeneration.from_pretrained(
+            BASE_MODEL,
+            dtype=torch.bfloat16,
+            device_map="auto",
+            trust_remote_code=True,
+        )
+    elif "InternVL3_5-8B-Instruct" == os.path.basename(BASE_MODEL):
+        print(f"{os.path.basename(BASE_MODEL)} found!")
+        model = AutoModel.from_pretrained(
+            BASE_MODEL,
+            dtype=torch.bfloat16,
+            low_cpu_mem_usage=True,
+            # use_flash_attn=True,
+            device_map="auto",
+            trust_remote_code=True,
+        )
+    else:
+        raise Exception("Specified Base Model is not valid for this script!")
 
     # 3. Carica adapter PEFT
     model = PeftModel.from_pretrained(
@@ -76,7 +112,7 @@ def main():
     tokenizer.save_pretrained(OUTPUT_PATH)
     processor.save_pretrained(OUTPUT_PATH)
 
-    print("✅ Merge completato. Modello pronto per vLLM.")
+    print("Model merge success !")
 
 if __name__ == "__main__":
     main()
