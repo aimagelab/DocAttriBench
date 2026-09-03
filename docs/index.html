@@ -53,10 +53,12 @@
       inset: -42px -72px 0;
       z-index: -2;
       background:
-        repeating-linear-gradient(0deg, rgba(47, 143, 91, 0.14) 0 1px, transparent 1px 20px),
-        repeating-linear-gradient(90deg, rgba(47, 143, 91, 0.09) 0 1px, transparent 1px 72px);
+        linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(199, 237, 214, 0.34)) 2% 2% / 210px 252px no-repeat,
+        linear-gradient(135deg, rgba(255, 255, 255, 0.74), rgba(199, 237, 214, 0.28)) 86% 6% / 190px 236px no-repeat,
+        linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(199, 237, 214, 0.2)) 18% 58% / 168px 104px no-repeat,
+        linear-gradient(135deg, rgba(255, 255, 255, 0.58), rgba(199, 237, 214, 0.18)) 76% 62% / 152px 94px no-repeat;
       content: "";
-      opacity: 0.72;
+      opacity: 0.86;
       mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.72) 55%, transparent 100%);
     }
 
@@ -65,17 +67,18 @@
       inset: 0;
       z-index: -1;
       background:
-        linear-gradient(90deg, rgba(47, 143, 91, 0.34), rgba(47, 143, 91, 0.08)) 8% 23% / 150px 3px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.24), rgba(47, 143, 91, 0.06)) 8% 35% / 118px 3px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.2), rgba(47, 143, 91, 0.05)) 8% 47% / 134px 3px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.28), rgba(47, 143, 91, 0.06)) 86% 25% / 140px 3px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.22), rgba(47, 143, 91, 0.05)) 86% 37% / 112px 3px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.2), rgba(47, 143, 91, 0.05)) 86% 49% / 128px 3px no-repeat,
-        linear-gradient(135deg, rgba(255, 255, 255, 0.76), rgba(199, 237, 214, 0.34)) 4% 4% / 190px 226px no-repeat,
-        linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(199, 237, 214, 0.28)) 88% 8% / 174px 212px no-repeat;
+        linear-gradient(90deg, rgba(47, 143, 91, 0.32), rgba(47, 143, 91, 0.1)) 6% 20% / 132px 3px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.24), rgba(47, 143, 91, 0.07)) 6% 30% / 164px 3px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.2), rgba(47, 143, 91, 0.05)) 6% 40% / 108px 3px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.28), rgba(47, 143, 91, 0.08)) 88% 23% / 118px 3px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.22), rgba(47, 143, 91, 0.06)) 88% 33% / 152px 3px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.18), rgba(47, 143, 91, 0.05)) 88% 43% / 96px 3px no-repeat,
+        linear-gradient(135deg, rgba(47, 143, 91, 0.16), rgba(47, 143, 91, 0.03)) 12% 58% / 54px 38px no-repeat,
+        linear-gradient(135deg, rgba(47, 143, 91, 0.14), rgba(47, 143, 91, 0.03)) 81% 59% / 48px 34px no-repeat,
+        linear-gradient(180deg, rgba(255, 255, 255, 0.44), rgba(247, 251, 248, 0.18));
       border-radius: 14px;
       content: "";
-      opacity: 0.86;
+      opacity: 0.92;
     }
 
     .venue {
@@ -793,7 +796,7 @@
             <h2 id="qualitative-title">Qualitative Examples</h2>
             <p class="lead">
               Qualitative examples for seven of the eight datasets that make up DocAttriBench;
-              SlideVQA is excluded due to licensing restrictions.
+              <br>SlideVQA is excluded due to licensing restrictions.
             </p>
           </div>
           <div class="qualitative-rows" aria-label="Qualitative examples by source dataset">
