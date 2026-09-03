@@ -363,42 +363,54 @@
       white-space: nowrap;
     }
 
-    .qualitative-grid {
+    .qualitative-rows {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
+      gap: 18px;
       max-width: 920px;
       margin: 4px auto 0;
     }
 
-    .qualitative-card {
+    .qualitative-row {
       display: grid;
-      gap: 10px;
-      color: var(--ink);
+      grid-template-columns: 150px minmax(0, 1fr);
+      gap: 16px;
+      align-items: center;
+    }
+
+    .dataset-name {
+      color: var(--accent);
+      font-family: "Cambo", Georgia, serif;
+      font-size: 1.22rem;
+      line-height: 1.15;
+      text-align: right;
+    }
+
+    .qualitative-examples {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .qualitative-card {
+      display: block;
       text-decoration: none;
     }
 
     .qualitative-card img {
       display: block;
       width: 100%;
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 16 / 10;
       object-fit: contain;
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.66);
+      background: #fff;
+      padding: 8px;
       transition: transform 160ms ease, box-shadow 160ms ease;
     }
 
     .qualitative-card:hover img {
       transform: translateY(-2px);
       box-shadow: 0 14px 30px rgba(31, 43, 37, 0.08);
-    }
-
-    .qualitative-card span {
-      color: var(--muted);
-      font-size: 0.92rem;
-      font-weight: 700;
-      text-align: center;
     }
 
     .lightbox {
@@ -487,9 +499,17 @@
 
       .why-grid,
       .stats,
-      .result-grid,
-      .qualitative-grid {
+      .result-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .qualitative-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .dataset-name {
+        text-align: left;
       }
 
       .stat {
@@ -505,7 +525,7 @@
       .why-grid,
       .stats,
       .result-grid,
-      .qualitative-grid {
+      .qualitative-examples {
         grid-template-columns: 1fr;
       }
     }
@@ -738,22 +758,66 @@
           <div class="feature-copy">
             <h2 id="qualitative-title">Qualitative Examples</h2>
             <p class="lead">
-              DoclingMatix examples with questions, answers, evidence types, and localized supporting regions.
+              Qualitative examples for seven of the eight datasets that make up DocAttriBench; SlideVQA is excluded due to licensing restrictions.
             </p>
           </div>
-          <div class="qualitative-grid" aria-label="DoclingMatix qualitative examples">
-            <a class="qualitative-card" href="#doclingmatix-1">
-              <img src="images/qualitatives/doclingmatix_1.png" alt="DoclingMatix qualitative example 1.">
-              <span>DoclingMatix example 1</span>
-            </a>
-            <a class="qualitative-card" href="#doclingmatix-2">
-              <img src="images/qualitatives/doclingmatix_2.png" alt="DoclingMatix qualitative example 2.">
-              <span>DoclingMatix example 2</span>
-            </a>
-            <a class="qualitative-card" href="#doclingmatix-3">
-              <img src="images/qualitatives/doclingmatix_3.png" alt="DoclingMatix qualitative example 3.">
-              <span>DoclingMatix example 3</span>
-            </a>
+          <div class="qualitative-rows" aria-label="Qualitative examples by source dataset">
+            <div class="qualitative-row">
+              <div class="dataset-name">DoclingMatix</div>
+              <div class="qualitative-examples">
+                <a class="qualitative-card" href="#doclingmatix-1"><img src="images/qualitatives/doclingmatix_1.png" alt="DoclingMatix qualitative example 1."></a>
+                <a class="qualitative-card" href="#doclingmatix-2"><img src="images/qualitatives/doclingmatix_2.png" alt="DoclingMatix qualitative example 2."></a>
+                <a class="qualitative-card" href="#doclingmatix-3"><img src="images/qualitatives/doclingmatix_3.png" alt="DoclingMatix qualitative example 3."></a>
+              </div>
+            </div>
+            <div class="qualitative-row">
+              <div class="dataset-name">DocVQA</div>
+              <div class="qualitative-examples">
+                <a class="qualitative-card" href="#docvqa-1"><img src="images/qualitatives/docvqa_1.png" alt="DocVQA qualitative example 1."></a>
+                <a class="qualitative-card" href="#docvqa-2"><img src="images/qualitatives/docvqa_2.png" alt="DocVQA qualitative example 2."></a>
+                <a class="qualitative-card" href="#docvqa-3"><img src="images/qualitatives/docvqa_3.png" alt="DocVQA qualitative example 3."></a>
+              </div>
+            </div>
+            <div class="qualitative-row">
+              <div class="dataset-name">VisualMRC</div>
+              <div class="qualitative-examples">
+                <a class="qualitative-card" href="#visualmrc-1"><img src="images/qualitatives/visualmrc_1.png" alt="VisualMRC qualitative example 1."></a>
+                <a class="qualitative-card" href="#visualmrc-2"><img src="images/qualitatives/visualmrc_2.png" alt="VisualMRC qualitative example 2."></a>
+                <a class="qualitative-card" href="#visualmrc-3"><img src="images/qualitatives/visualmrc_3.png" alt="VisualMRC qualitative example 3."></a>
+              </div>
+            </div>
+            <div class="qualitative-row">
+              <div class="dataset-name">VISA</div>
+              <div class="qualitative-examples">
+                <a class="qualitative-card" href="#visa-1"><img src="images/qualitatives/visa_1.png" alt="VISA qualitative example 1."></a>
+                <a class="qualitative-card" href="#visa-2"><img src="images/qualitatives/visa_2.png" alt="VISA qualitative example 2."></a>
+                <a class="qualitative-card" href="#visa-3"><img src="images/qualitatives/visa_3.png" alt="VISA qualitative example 3."></a>
+              </div>
+            </div>
+            <div class="qualitative-row">
+              <div class="dataset-name">VisualWebBench</div>
+              <div class="qualitative-examples">
+                <a class="qualitative-card" href="#visualwebbench-1"><img src="images/qualitatives/visualwebbench_1.png" alt="VisualWebBench qualitative example 1."></a>
+                <a class="qualitative-card" href="#visualwebbench-2"><img src="images/qualitatives/visualwebbench_2.png" alt="VisualWebBench qualitative example 2."></a>
+                <a class="qualitative-card" href="#visualwebbench-3"><img src="images/qualitatives/visualwebbench_3.png" alt="VisualWebBench qualitative example 3."></a>
+              </div>
+            </div>
+            <div class="qualitative-row">
+              <div class="dataset-name">LongDocURL</div>
+              <div class="qualitative-examples">
+                <a class="qualitative-card" href="#longdocurl-1"><img src="images/qualitatives/longdocurl_1.png" alt="LongDocURL qualitative example 1."></a>
+                <a class="qualitative-card" href="#longdocurl-2"><img src="images/qualitatives/longdocurl_2.png" alt="LongDocURL qualitative example 2."></a>
+                <a class="qualitative-card" href="#longdocurl-3"><img src="images/qualitatives/longdocurl_3.png" alt="LongDocURL qualitative example 3."></a>
+              </div>
+            </div>
+            <div class="qualitative-row">
+              <div class="dataset-name">MMLongBench-DOC</div>
+              <div class="qualitative-examples">
+                <a class="qualitative-card" href="#mmlongbenchdoc-1"><img src="images/qualitatives/mmlongbenchdoc_1.png" alt="MMLongBench-DOC qualitative example 1."></a>
+                <a class="qualitative-card" href="#mmlongbenchdoc-2"><img src="images/qualitatives/mmlongbenchdoc_2.png" alt="MMLongBench-DOC qualitative example 2."></a>
+                <a class="qualitative-card" href="#mmlongbenchdoc-3"><img src="images/qualitatives/mmlongbenchdoc_3.png" alt="MMLongBench-DOC qualitative example 3."></a>
+              </div>
+            </div>
           </div>
         </section>
       </div>
@@ -777,6 +841,78 @@
   </a>
   <a class="lightbox" id="doclingmatix-3" href="#qualitative-title" aria-label="Close enlarged image">
     <img src="images/qualitatives/doclingmatix_3.png" alt="Enlarged DoclingMatix qualitative example 3.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="docvqa-1" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/docvqa_1.png" alt="Enlarged DocVQA qualitative example 1.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="docvqa-2" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/docvqa_2.png" alt="Enlarged DocVQA qualitative example 2.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="docvqa-3" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/docvqa_3.png" alt="Enlarged DocVQA qualitative example 3.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="visualmrc-1" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/visualmrc_1.png" alt="Enlarged VisualMRC qualitative example 1.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="visualmrc-2" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/visualmrc_2.png" alt="Enlarged VisualMRC qualitative example 2.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="visualmrc-3" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/visualmrc_3.png" alt="Enlarged VisualMRC qualitative example 3.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="visa-1" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/visa_1.png" alt="Enlarged VISA qualitative example 1.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="visa-2" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/visa_2.png" alt="Enlarged VISA qualitative example 2.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="visa-3" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/visa_3.png" alt="Enlarged VISA qualitative example 3.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="visualwebbench-1" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/visualwebbench_1.png" alt="Enlarged VisualWebBench qualitative example 1.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="visualwebbench-2" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/visualwebbench_2.png" alt="Enlarged VisualWebBench qualitative example 2.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="visualwebbench-3" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/visualwebbench_3.png" alt="Enlarged VisualWebBench qualitative example 3.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="longdocurl-1" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/longdocurl_1.png" alt="Enlarged LongDocURL qualitative example 1.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="longdocurl-2" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/longdocurl_2.png" alt="Enlarged LongDocURL qualitative example 2.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="longdocurl-3" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/longdocurl_3.png" alt="Enlarged LongDocURL qualitative example 3.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="mmlongbenchdoc-1" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/mmlongbenchdoc_1.png" alt="Enlarged MMLongBench-DOC qualitative example 1.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="mmlongbenchdoc-2" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/mmlongbenchdoc_2.png" alt="Enlarged MMLongBench-DOC qualitative example 2.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="mmlongbenchdoc-3" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/mmlongbenchdoc_3.png" alt="Enlarged MMLongBench-DOC qualitative example 3.">
     <span class="lightbox-close" aria-hidden="true">&times;</span>
   </a>
 </body>
