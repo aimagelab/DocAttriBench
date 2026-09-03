@@ -48,7 +48,7 @@
     .venue {
       display: block;
       color: var(--accent);
-      font-size: 0.95rem;
+      font-size: 1.08rem;
       font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -71,7 +71,7 @@
       max-width: 980px;
       margin: 0 auto;
       color: #29332e;
-      font-size: 1.02rem;
+      font-size: 1.1rem;
       line-height: 1.45;
     }
 
@@ -93,7 +93,7 @@
       gap: 8px 22px;
       margin: 18px auto 0;
       color: var(--muted);
-      font-size: 0.98rem;
+      font-size: 1.05rem;
       line-height: 1.45;
     }
 
@@ -320,10 +320,18 @@
     }
 
     .result-card h3 {
-      margin: 0 0 12px;
+      margin: 0 0 4px;
       color: var(--ink);
       font-size: 1.04rem;
       line-height: 1.2;
+    }
+
+    .backbone {
+      display: block;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+      line-height: 1.25;
     }
 
     .metric {
@@ -536,7 +544,7 @@
           <div class="feature-copy method-copy">
             <h2>MAPPET: Mask-based Perplexity-Derived Attribution</h2>
             <p class="lead">
-              MAPPET masks document layout elements one at a time and measures how the answer perplexity changes. If removing an element causes a strong increase in perplexity, that element is likely to contain information needed to answer the question. Low-confidence or ambiguous attributions are then filtered out.
+              MAPPET masks document layout elements one at a time and measures how answer perplexity changes. If removing an element causes a strong increase in perplexity, that element is likely to contain information needed to answer the question. Ambiguous or low-confidence attributions are discarded.
             </p>
           </div>
           <figure class="figure">
@@ -557,25 +565,28 @@
           <div class="result-grid" aria-label="Grounded Answer Generation results">
             <article class="result-card">
               <h3>MAPPET-7B</h3>
+              <span class="backbone">Fine-tuned Qwen2.5-VL-7B</span>
               <strong class="metric">Avg: 33.8</strong>
               <div class="deltas">
-                <code>+30.8 vs. base</code>
+                <code>+30.8 vs. backbone</code>
                 <code>+9.5 vs. VISA</code>
               </div>
             </article>
             <article class="result-card">
               <h3>MAPPET-8B</h3>
+              <span class="backbone">Fine-tuned Qwen3-VL-8B</span>
               <strong class="metric">Avg: 37.0</strong>
               <div class="deltas">
-                <code>+27.6 vs. base</code>
+                <code>+27.6 vs. backbone</code>
                 <code>+12.7 vs. VISA</code>
               </div>
             </article>
             <article class="result-card">
               <h3>MAPPET-I-8B</h3>
+              <span class="backbone">Fine-tuned InternVL3.5-8B</span>
               <strong class="metric">Avg: 33.4</strong>
               <div class="deltas">
-                <code>+28.1 vs. base</code>
+                <code>+28.1 vs. backbone</code>
                 <code>+9.1 vs. VISA</code>
               </div>
             </article>
@@ -589,7 +600,7 @@
           <div class="feature-copy">
             <h2 id="grounding-title">Grounding-only Tasks</h2>
             <p class="lead">
-              How well can models localize the supporting evidence when evaluated independently from answer generation?
+              How well can models localize supporting evidence when evaluated independently from answer generation?
             </p>
             <p class="lead">
               We evaluate two complementary settings: answer locating, where the model receives the document and question, and post-hoc grounding, where the answer is also provided. Fine-tuning on DocAttriBench yields large improvements over the corresponding zero-shot backbones in both tasks.
@@ -598,40 +609,43 @@
           <div class="result-grid" aria-label="Grounding-only task results">
             <article class="result-card">
               <h3>MAPPET-7B</h3>
+              <span class="backbone">Fine-tuned Qwen2.5-VL-7B</span>
               <strong class="metric">Answer Locating: 49.2</strong>
               <div class="deltas">
-                <code>+31.3 vs. base</code>
+                <code>+31.3 vs. backbone</code>
                 <code>&minus;0.4 vs. VISA</code>
               </div>
               <strong class="metric">Post-hoc: 53.1</strong>
               <div class="deltas">
-                <code>+31.1 vs. base</code>
+                <code>+31.1 vs. backbone</code>
                 <code>+1.1 vs. VISA</code>
               </div>
             </article>
             <article class="result-card">
               <h3>MAPPET-8B</h3>
+              <span class="backbone">Fine-tuned Qwen3-VL-8B</span>
               <strong class="metric">Answer Locating: 53.6</strong>
               <div class="deltas">
-                <code>+32.5 vs. base</code>
+                <code>+32.5 vs. backbone</code>
                 <code>+4.0 vs. VISA</code>
               </div>
               <strong class="metric">Post-hoc: 52.2</strong>
               <div class="deltas">
-                <code>+23.1 vs. base</code>
+                <code>+23.1 vs. backbone</code>
                 <code>+0.2 vs. VISA</code>
               </div>
             </article>
             <article class="result-card">
               <h3>MAPPET-I-8B</h3>
+              <span class="backbone">Fine-tuned InternVL3.5-8B</span>
               <strong class="metric">Answer Locating: 61.7</strong>
               <div class="deltas">
-                <code>+46.4 vs. base</code>
+                <code>+46.4 vs. backbone</code>
                 <code>+12.1 vs. VISA</code>
               </div>
               <strong class="metric">Post-hoc: 68.1</strong>
               <div class="deltas">
-                <code>+49.7 vs. base</code>
+                <code>+49.7 vs. backbone</code>
                 <code>+16.1 vs. VISA</code>
               </div>
             </article>
