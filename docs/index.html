@@ -50,41 +50,37 @@
 
     .hero::before {
       position: absolute;
-      inset: -42px -92px 0;
+      inset: 0;
       z-index: -2;
       background:
-        linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(199, 237, 214, 0.38)) 1% 0 / 230px 270px no-repeat,
-        linear-gradient(135deg, rgba(255, 255, 255, 0.84), rgba(199, 237, 214, 0.3)) 87% 2% / 220px 258px no-repeat,
-        linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(199, 237, 214, 0.24)) 13% 66% / 144px 88px no-repeat,
-        linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(199, 237, 214, 0.22)) 78% 68% / 136px 82px no-repeat,
-        radial-gradient(circle at 8% 18%, rgba(47, 143, 91, 0.15), transparent 24%),
-        radial-gradient(circle at 92% 16%, rgba(47, 143, 91, 0.13), transparent 25%);
+        radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.9), transparent 36%),
+        radial-gradient(circle at 16% 30%, rgba(47, 143, 91, 0.16), transparent 28%),
+        radial-gradient(circle at 84% 28%, rgba(47, 143, 91, 0.14), transparent 28%),
+        linear-gradient(180deg, rgba(214, 242, 225, 0.74), rgba(247, 251, 248, 0.28) 78%, rgba(247, 251, 248, 0));
       content: "";
-      opacity: 0.96;
-      mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.82) 62%, transparent 100%);
+      border-radius: 22px;
+      opacity: 1;
     }
 
     .hero::after {
       position: absolute;
-      inset: 0;
+      inset: 18px 34px 22px;
       z-index: -1;
       background:
-        linear-gradient(90deg, rgba(47, 143, 91, 0.38), rgba(47, 143, 91, 0.1)) 7% 18% / 136px 3px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.27), rgba(47, 143, 91, 0.07)) 7% 27% / 168px 3px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.22), rgba(47, 143, 91, 0.05)) 7% 36% / 116px 3px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.17), rgba(47, 143, 91, 0.04)) 7% 45% / 148px 3px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.32), rgba(47, 143, 91, 0.08)) 87% 20% / 126px 3px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.25), rgba(47, 143, 91, 0.06)) 87% 29% / 158px 3px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.2), rgba(47, 143, 91, 0.05)) 87% 38% / 104px 3px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.16), rgba(47, 143, 91, 0.04)) 87% 47% / 140px 3px no-repeat,
-        linear-gradient(135deg, rgba(47, 143, 91, 0.18), rgba(47, 143, 91, 0.04)) 17% 22% / 58px 42px no-repeat,
-        linear-gradient(135deg, rgba(47, 143, 91, 0.16), rgba(47, 143, 91, 0.04)) 80% 24% / 54px 40px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.2), rgba(47, 143, 91, 0.04)) 50% 36% / 76% 2px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.14), rgba(47, 143, 91, 0.03)) 50% 48% / 70% 2px no-repeat,
-        linear-gradient(180deg, rgba(255, 255, 255, 0.54), rgba(247, 251, 248, 0.14));
-      border-radius: 14px;
+        linear-gradient(90deg, rgba(47, 143, 91, 0.22), rgba(47, 143, 91, 0.05)) 7% 24% / 138px 2px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.16), rgba(47, 143, 91, 0.04)) 7% 33% / 174px 2px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.13), rgba(47, 143, 91, 0.03)) 7% 42% / 122px 2px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.18), rgba(47, 143, 91, 0.04)) 93% 24% / 142px 2px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.14), rgba(47, 143, 91, 0.03)) 93% 33% / 176px 2px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.12), rgba(47, 143, 91, 0.03)) 93% 42% / 118px 2px no-repeat,
+        linear-gradient(135deg, rgba(47, 143, 91, 0.12), rgba(47, 143, 91, 0.02)) 14% 54% / 54px 38px no-repeat,
+        linear-gradient(135deg, rgba(47, 143, 91, 0.1), rgba(47, 143, 91, 0.02)) 83% 54% / 52px 36px no-repeat,
+        linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(219, 243, 228, 0.35)) 0 8% / 220px 240px no-repeat,
+        linear-gradient(135deg, rgba(255, 255, 255, 0.64), rgba(219, 243, 228, 0.3)) 100% 8% / 220px 240px no-repeat;
+      border-radius: 18px;
       content: "";
-      opacity: 0.96;
+      opacity: 1;
+      mask-image: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, 0.34) 23%, transparent 38%, transparent 62%, rgba(0, 0, 0, 0.34) 77%, #000 100%);
     }
 
     .venue {
