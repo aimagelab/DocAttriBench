@@ -41,8 +41,41 @@
     }
 
     .hero {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
       text-align: center;
-      padding: 0 12px 36px;
+      padding: 26px 12px 42px;
+    }
+
+    .hero::before {
+      position: absolute;
+      inset: -34px -72px 0;
+      z-index: -2;
+      background:
+        repeating-linear-gradient(0deg, rgba(47, 143, 91, 0.08) 0 1px, transparent 1px 20px),
+        repeating-linear-gradient(90deg, rgba(47, 143, 91, 0.05) 0 1px, transparent 1px 72px);
+      content: "";
+      opacity: 0.58;
+      mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.72) 55%, transparent 100%);
+    }
+
+    .hero::after {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        linear-gradient(90deg, rgba(47, 143, 91, 0.16), rgba(47, 143, 91, 0.04)) 10% 22% / 120px 2px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.12), rgba(47, 143, 91, 0.03)) 10% 34% / 92px 2px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.1), rgba(47, 143, 91, 0.02)) 10% 46% / 106px 2px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.12), rgba(47, 143, 91, 0.03)) 86% 26% / 112px 2px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.1), rgba(47, 143, 91, 0.02)) 86% 38% / 88px 2px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.1), rgba(47, 143, 91, 0.02)) 86% 50% / 102px 2px no-repeat,
+        linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(199, 237, 214, 0.18)) 6% 10% / 150px 190px no-repeat,
+        linear-gradient(135deg, rgba(255, 255, 255, 0.42), rgba(199, 237, 214, 0.14)) 87% 12% / 138px 176px no-repeat;
+      border-radius: 14px;
+      content: "";
+      opacity: 0.64;
     }
 
     .venue {
