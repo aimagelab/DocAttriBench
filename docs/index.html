@@ -54,9 +54,9 @@
     h1 {
       max-width: 880px;
       margin: 16px auto 18px;
-      font-size: clamp(1.8rem, 3.9vw, 2.85rem);
-      line-height: 1.12;
-      font-weight: 780;
+      font-size: clamp(1.55rem, 3.2vw, 2.35rem);
+      line-height: 1.16;
+      font-weight: 760;
     }
 
     .authors {
@@ -166,9 +166,9 @@
 
     .story {
       display: grid;
-      gap: 34px;
+      gap: 24px;
       max-width: 960px;
-      margin: 0 auto 46px;
+      margin: 0 auto 40px;
     }
 
     .tagline {
@@ -183,7 +183,7 @@
 
     .feature {
       display: grid;
-      gap: 20px;
+      gap: 14px;
     }
 
     .feature-copy {
@@ -256,38 +256,47 @@
     .stats {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 1px;
-      overflow: hidden;
-      max-width: 920px;
-      margin: -2px auto 0;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--line);
-      box-shadow: 0 16px 36px rgba(31, 43, 37, 0.07);
+      gap: 18px;
+      max-width: 860px;
+      margin: 8px auto 0;
     }
 
     .stat {
-      min-height: 116px;
-      padding: 20px 16px;
-      background: #fff;
+      position: relative;
+      min-height: 92px;
+      padding: 18px 10px 10px;
       text-align: center;
+    }
+
+    .stat::before {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 42px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--accent);
+      content: "";
+      transform: translateX(-50%);
     }
 
     .stat strong {
       display: block;
       color: var(--accent);
-      font-size: clamp(2rem, 4vw, 3.05rem);
+      font-size: clamp(2.05rem, 4vw, 3.35rem);
       line-height: 1;
       font-weight: 850;
     }
 
     .stat span {
       display: block;
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 0.96rem;
-      font-weight: 680;
+      margin-top: 10px;
+      color: #26352d;
+      font-size: 0.82rem;
+      font-weight: 760;
+      letter-spacing: 0.08em;
       line-height: 1.25;
+      text-transform: uppercase;
     }
 
     .abstract {
@@ -309,7 +318,7 @@
       }
 
       h1 {
-        font-size: 1.75rem;
+        font-size: 1.55rem;
       }
 
       .authors {
@@ -331,17 +340,17 @@
       }
 
       .story {
-        gap: 30px;
-        margin-bottom: 40px;
+        gap: 24px;
+        margin-bottom: 34px;
       }
 
       .why-grid,
       .stats {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .stat {
-        min-height: 96px;
+        min-height: 86px;
       }
     }
   </style>
