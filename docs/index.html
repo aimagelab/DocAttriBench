@@ -207,6 +207,14 @@
       line-height: 1.58;
     }
 
+    .method-copy {
+      max-width: 760px;
+    }
+
+    .method-copy .lead {
+      font-size: 1.08rem;
+    }
+
     .figure {
       margin: 0 auto;
       width: min(100%, 920px);
@@ -295,6 +303,58 @@
       text-transform: uppercase;
     }
 
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      max-width: 920px;
+      margin: 4px auto 0;
+    }
+
+    .result-card {
+      padding: 18px 18px 16px;
+      border-top: 3px solid var(--accent);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 0 12px 28px rgba(31, 43, 37, 0.05);
+    }
+
+    .result-card h3 {
+      margin: 0 0 12px;
+      color: var(--ink);
+      font-size: 1.04rem;
+      line-height: 1.2;
+    }
+
+    .metric {
+      display: block;
+      margin-top: 10px;
+      color: var(--accent);
+      font-size: 1.34rem;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .deltas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .deltas code {
+      padding: 4px 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #f7fbf8;
+      color: #34403a;
+      font-family: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
     .abstract {
       margin: 0;
       color: #34403a;
@@ -341,12 +401,25 @@
       }
 
       .why-grid,
-      .stats {
+      .stats,
+      .result-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .stat {
         min-height: 86px;
+      }
+
+      .result-grid {
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .why-grid,
+      .stats,
+      .result-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -457,10 +530,10 @@
           <div class="feature-copy">
             <h2 id="construction-title">How is DocAttriBench constructed?</h2>
             <p class="lead">
-              We use MAPPET to automatically identify the document layout element that supports each answer.
+              We introduce MAPPET, an automatic attribution method that identifies the document layout element supporting each answer.
             </p>
           </div>
-          <div class="feature-copy">
+          <div class="feature-copy method-copy">
             <h2>MAPPET: Mask-based Perplexity-Derived Attribution</h2>
             <p class="lead">
               MAPPET masks document layout elements one at a time and measures how the answer perplexity changes. If removing an element causes a strong increase in perplexity, that element is likely to contain information needed to answer the question. Low-confidence or ambiguous attributions are then filtered out.
@@ -468,6 +541,103 @@
           </div>
           <figure class="figure">
             <img src="images/attribution_method.png" alt="MAPPET attribution method overview.">
+          </figure>
+        </section>
+
+        <section class="feature" aria-labelledby="generation-title">
+          <div class="feature-copy">
+            <h2 id="generation-title">Grounded Answer Generation</h2>
+            <p class="lead">
+              How well can models answer a question and localize the supporting evidence at the same time?
+            </p>
+            <p class="lead">
+              Zero-shot MLLMs often achieve reasonable answer accuracy but struggle with evidence localization. Fine-tuning on DocAttriBench substantially improves grounding performance.
+            </p>
+          </div>
+          <div class="result-grid" aria-label="Grounded Answer Generation results">
+            <article class="result-card">
+              <h3>MAPPET-7B</h3>
+              <strong class="metric">Avg: 33.8</strong>
+              <div class="deltas">
+                <code>+30.8 vs. base</code>
+                <code>+9.5 vs. VISA</code>
+              </div>
+            </article>
+            <article class="result-card">
+              <h3>MAPPET-8B</h3>
+              <strong class="metric">Avg: 37.0</strong>
+              <div class="deltas">
+                <code>+27.6 vs. base</code>
+                <code>+12.7 vs. VISA</code>
+              </div>
+            </article>
+            <article class="result-card">
+              <h3>MAPPET-I-8B</h3>
+              <strong class="metric">Avg: 33.4</strong>
+              <div class="deltas">
+                <code>+28.1 vs. base</code>
+                <code>+9.1 vs. VISA</code>
+              </div>
+            </article>
+          </div>
+          <figure class="figure">
+            <img src="images/Tab5.png" alt="Grounded Answer Generation benchmark table.">
+          </figure>
+        </section>
+
+        <section class="feature" aria-labelledby="grounding-title">
+          <div class="feature-copy">
+            <h2 id="grounding-title">Grounding-only Tasks</h2>
+            <p class="lead">
+              How well can models localize the supporting evidence when evaluated independently from answer generation?
+            </p>
+            <p class="lead">
+              We evaluate two complementary settings: answer locating, where the model receives the document and question, and post-hoc grounding, where the answer is also provided. Fine-tuning on DocAttriBench yields large improvements over the corresponding zero-shot backbones in both tasks.
+            </p>
+          </div>
+          <div class="result-grid" aria-label="Grounding-only task results">
+            <article class="result-card">
+              <h3>MAPPET-7B</h3>
+              <strong class="metric">Answer Locating: 49.2</strong>
+              <div class="deltas">
+                <code>+31.3 vs. base</code>
+                <code>&minus;0.4 vs. VISA</code>
+              </div>
+              <strong class="metric">Post-hoc: 53.1</strong>
+              <div class="deltas">
+                <code>+31.1 vs. base</code>
+                <code>+1.1 vs. VISA</code>
+              </div>
+            </article>
+            <article class="result-card">
+              <h3>MAPPET-8B</h3>
+              <strong class="metric">Answer Locating: 53.6</strong>
+              <div class="deltas">
+                <code>+32.5 vs. base</code>
+                <code>+4.0 vs. VISA</code>
+              </div>
+              <strong class="metric">Post-hoc: 52.2</strong>
+              <div class="deltas">
+                <code>+23.1 vs. base</code>
+                <code>+0.2 vs. VISA</code>
+              </div>
+            </article>
+            <article class="result-card">
+              <h3>MAPPET-I-8B</h3>
+              <strong class="metric">Answer Locating: 61.7</strong>
+              <div class="deltas">
+                <code>+46.4 vs. base</code>
+                <code>+12.1 vs. VISA</code>
+              </div>
+              <strong class="metric">Post-hoc: 68.1</strong>
+              <div class="deltas">
+                <code>+49.7 vs. base</code>
+                <code>+16.1 vs. VISA</code>
+              </div>
+            </article>
+          </div>
+          <figure class="figure">
+            <img src="images/Tab6.png" alt="Grounding-only benchmark table.">
           </figure>
         </section>
       </div>
