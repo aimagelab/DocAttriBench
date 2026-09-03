@@ -363,6 +363,79 @@
       white-space: nowrap;
     }
 
+    .qualitative-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      max-width: 920px;
+      margin: 4px auto 0;
+    }
+
+    .qualitative-card {
+      display: grid;
+      gap: 10px;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .qualitative-card img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: contain;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.66);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .qualitative-card:hover img {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(31, 43, 37, 0.08);
+    }
+
+    .qualitative-card span {
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      background: rgba(18, 27, 22, 0.82);
+    }
+
+    .lightbox:target {
+      display: flex;
+    }
+
+    .lightbox img {
+      display: block;
+      max-width: min(1200px, 94vw);
+      max-height: 88vh;
+      width: auto;
+      height: auto;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      color: #fff;
+      font-size: 2.2rem;
+      line-height: 1;
+      text-decoration: none;
+    }
+
     .abstract {
       margin: 0;
       color: #34403a;
@@ -414,7 +487,8 @@
 
       .why-grid,
       .stats,
-      .result-grid {
+      .result-grid,
+      .qualitative-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
@@ -430,7 +504,8 @@
     @media (max-width: 520px) {
       .why-grid,
       .stats,
-      .result-grid {
+      .result-grid,
+      .qualitative-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -658,6 +733,29 @@
             <img src="images/Tab6.png" alt="Grounding-only benchmark table.">
           </figure>
         </section>
+
+        <section class="feature" aria-labelledby="qualitative-title">
+          <div class="feature-copy">
+            <h2 id="qualitative-title">Qualitative Examples</h2>
+            <p class="lead">
+              DoclingMatix examples with questions, answers, evidence types, and localized supporting regions.
+            </p>
+          </div>
+          <div class="qualitative-grid" aria-label="DoclingMatix qualitative examples">
+            <a class="qualitative-card" href="#doclingmatix-1">
+              <img src="images/qualitatives/doclingmatix_1.png" alt="DoclingMatix qualitative example 1.">
+              <span>DoclingMatix example 1</span>
+            </a>
+            <a class="qualitative-card" href="#doclingmatix-2">
+              <img src="images/qualitatives/doclingmatix_2.png" alt="DoclingMatix qualitative example 2.">
+              <span>DoclingMatix example 2</span>
+            </a>
+            <a class="qualitative-card" href="#doclingmatix-3">
+              <img src="images/qualitatives/doclingmatix_3.png" alt="DoclingMatix qualitative example 3.">
+              <span>DoclingMatix example 3</span>
+            </a>
+          </div>
+        </section>
       </div>
 
       <section class="abstract-section" aria-labelledby="abstract-title">
@@ -668,5 +766,18 @@
       </section>
     </div>
   </main>
+
+  <a class="lightbox" id="doclingmatix-1" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/doclingmatix_1.png" alt="Enlarged DoclingMatix qualitative example 1.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="doclingmatix-2" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/doclingmatix_2.png" alt="Enlarged DoclingMatix qualitative example 2.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
+  <a class="lightbox" id="doclingmatix-3" href="#qualitative-title" aria-label="Close enlarged image">
+    <img src="images/qualitatives/doclingmatix_3.png" alt="Enlarged DoclingMatix qualitative example 3.">
+    <span class="lightbox-close" aria-hidden="true">&times;</span>
+  </a>
 </body>
 </html>
