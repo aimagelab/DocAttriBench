@@ -452,6 +452,24 @@
             </div>
           </div>
         </section>
+
+        <section class="feature" aria-labelledby="construction-title">
+          <div class="feature-copy">
+            <h2 id="construction-title">How is DocAttriBench constructed?</h2>
+            <p class="lead">
+              We use MAPPET to automatically identify the document layout element that supports each answer.
+            </p>
+          </div>
+          <div class="feature-copy">
+            <h2>MAPPET: Mask-based Perplexity-Derived Attribution</h2>
+            <p class="lead">
+              MAPPET masks document layout elements one at a time and measures how the answer perplexity changes. If removing an element causes a strong increase in perplexity, that element is likely to contain information needed to answer the question. Low-confidence or ambiguous attributions are then filtered out.
+            </p>
+          </div>
+          <figure class="figure">
+            <img src="images/attribution_method.png" alt="MAPPET attribution method overview.">
+          </figure>
+        </section>
       </div>
 
       <section aria-labelledby="abstract-title">
