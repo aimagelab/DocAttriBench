@@ -24,6 +24,10 @@
       box-sizing: border-box;
     }
 
+    html {
+      overflow-x: hidden;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -32,6 +36,7 @@
         linear-gradient(180deg, rgba(199, 237, 214, 0.52), rgba(247, 251, 248, 0) 360px),
         var(--page);
       color: var(--ink);
+      overflow-x: hidden;
     }
 
     main {
@@ -43,44 +48,55 @@
     .hero {
       position: relative;
       isolation: isolate;
-      overflow: hidden;
+      overflow: visible;
       text-align: center;
       padding: 34px 12px 48px;
     }
 
     .hero::before {
       position: absolute;
-      inset: 0;
+      top: -56px;
+      right: calc(50% - 50vw);
+      bottom: -4px;
+      left: calc(50% - 50vw);
       z-index: -2;
       background:
-        radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.9), transparent 36%),
-        radial-gradient(circle at 16% 30%, rgba(47, 143, 91, 0.16), transparent 28%),
-        radial-gradient(circle at 84% 28%, rgba(47, 143, 91, 0.14), transparent 28%),
-        linear-gradient(180deg, rgba(214, 242, 225, 0.74), rgba(247, 251, 248, 0.28) 78%, rgba(247, 251, 248, 0));
+        linear-gradient(180deg, rgba(219, 244, 229, 0.92), rgba(247, 251, 248, 0.18) 86%, rgba(247, 251, 248, 0)),
+        radial-gradient(circle at 14% 30%, rgba(47, 143, 91, 0.16), transparent 30%),
+        radial-gradient(circle at 86% 28%, rgba(47, 143, 91, 0.13), transparent 30%);
       content: "";
-      border-radius: 22px;
       opacity: 1;
     }
 
     .hero::after {
       position: absolute;
-      inset: 18px 34px 22px;
+      top: -28px;
+      right: calc(50% - 50vw);
+      bottom: 6px;
+      left: calc(50% - 50vw);
       z-index: -1;
       background:
-        linear-gradient(90deg, rgba(47, 143, 91, 0.22), rgba(47, 143, 91, 0.05)) 7% 24% / 138px 2px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.16), rgba(47, 143, 91, 0.04)) 7% 33% / 174px 2px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.13), rgba(47, 143, 91, 0.03)) 7% 42% / 122px 2px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.18), rgba(47, 143, 91, 0.04)) 93% 24% / 142px 2px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.14), rgba(47, 143, 91, 0.03)) 93% 33% / 176px 2px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.12), rgba(47, 143, 91, 0.03)) 93% 42% / 118px 2px no-repeat,
-        linear-gradient(135deg, rgba(47, 143, 91, 0.12), rgba(47, 143, 91, 0.02)) 14% 54% / 54px 38px no-repeat,
-        linear-gradient(135deg, rgba(47, 143, 91, 0.1), rgba(47, 143, 91, 0.02)) 83% 54% / 52px 36px no-repeat,
-        linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(219, 243, 228, 0.35)) 0 8% / 220px 240px no-repeat,
-        linear-gradient(135deg, rgba(255, 255, 255, 0.64), rgba(219, 243, 228, 0.3)) 100% 8% / 220px 240px no-repeat;
-      border-radius: 18px;
+        linear-gradient(rgba(47, 143, 91, 0.18), rgba(47, 143, 91, 0.18)) 8% 27% / 170px 3px no-repeat,
+        linear-gradient(rgba(47, 143, 91, 0.11), rgba(47, 143, 91, 0.11)) 8% 37% / 126px 3px no-repeat,
+        linear-gradient(rgba(47, 143, 91, 0.11), rgba(47, 143, 91, 0.11)) 8% 47% / 154px 3px no-repeat,
+        linear-gradient(rgba(47, 143, 91, 0.16), rgba(47, 143, 91, 0.16)) 92% 27% / 164px 3px no-repeat,
+        linear-gradient(rgba(47, 143, 91, 0.1), rgba(47, 143, 91, 0.1)) 92% 37% / 128px 3px no-repeat,
+        linear-gradient(rgba(47, 143, 91, 0.1), rgba(47, 143, 91, 0.1)) 92% 47% / 154px 3px no-repeat,
+        linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(217, 243, 227, 0.42)) 4% 12% / 172px 218px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.16), rgba(47, 143, 91, 0.05)) 6% 18% / 94px 8px no-repeat,
+        linear-gradient(90deg, rgba(28, 42, 35, 0.12), rgba(28, 42, 35, 0.03)) 6% 24% / 126px 3px no-repeat,
+        linear-gradient(90deg, rgba(28, 42, 35, 0.1), rgba(28, 42, 35, 0.03)) 6% 29% / 108px 3px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.18), rgba(47, 143, 91, 0.05)) 13% 57% / 62px 42px no-repeat,
+        linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(217, 243, 227, 0.4)) 96% 12% / 174px 218px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.16), rgba(47, 143, 91, 0.05)) 94% 18% / 94px 8px no-repeat,
+        linear-gradient(90deg, rgba(28, 42, 35, 0.12), rgba(28, 42, 35, 0.03)) 94% 24% / 126px 3px no-repeat,
+        linear-gradient(90deg, rgba(28, 42, 35, 0.1), rgba(28, 42, 35, 0.03)) 94% 29% / 108px 3px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.18), rgba(47, 143, 91, 0.05)) 87% 57% / 62px 42px no-repeat,
+        linear-gradient(135deg, rgba(255, 255, 255, 0.48), rgba(217, 243, 227, 0.22)) 23% 4% / 130px 168px no-repeat,
+        linear-gradient(135deg, rgba(255, 255, 255, 0.42), rgba(217, 243, 227, 0.2)) 77% 4% / 130px 168px no-repeat;
       content: "";
-      opacity: 1;
-      mask-image: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, 0.34) 23%, transparent 38%, transparent 62%, rgba(0, 0, 0, 0.34) 77%, #000 100%);
+      opacity: 0.9;
+      mask-image: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, 0.76) 26%, rgba(0, 0, 0, 0.2) 42%, rgba(0, 0, 0, 0.2) 58%, rgba(0, 0, 0, 0.76) 74%, #000 100%);
     }
 
     .venue {
