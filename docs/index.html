@@ -218,6 +218,58 @@
       gap: 14px;
     }
 
+    .section-band {
+      position: relative;
+      overflow: hidden;
+      width: min(100%, 1000px);
+      max-width: 1000px;
+      padding: 34px 28px;
+      border: 1px solid rgba(47, 143, 91, 0.12);
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(47, 143, 91, 0.12), transparent 28%),
+        radial-gradient(circle at 86% 18%, rgba(199, 237, 214, 0.52), transparent 30%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(237, 248, 241, 0.56));
+    }
+
+    .section-band::before {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background:
+        linear-gradient(90deg, rgba(47, 143, 91, 0.12), rgba(47, 143, 91, 0.03)) 4% 20% / 142px 2px no-repeat,
+        linear-gradient(90deg, rgba(47, 143, 91, 0.09), rgba(47, 143, 91, 0.02)) 4% 30% / 104px 2px no-repeat,
+        linear-gradient(135deg, rgba(255, 255, 255, 0.58), rgba(199, 237, 214, 0.24)) 91% 10% / 124px 156px no-repeat;
+      content: "";
+      opacity: 0.68;
+    }
+
+    .section-band > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .results-band {
+      display: grid;
+      gap: 34px;
+      background:
+        radial-gradient(circle at 14% 16%, rgba(47, 143, 91, 0.13), transparent 28%),
+        radial-gradient(circle at 88% 46%, rgba(199, 237, 214, 0.54), transparent 32%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(238, 248, 242, 0.62));
+    }
+
+    .results-band .feature {
+      max-width: 920px;
+    }
+
+    .abstract-section {
+      max-width: 1000px;
+      margin-top: 2px;
+      background:
+        radial-gradient(circle at 90% 10%, rgba(47, 143, 91, 0.1), transparent 26%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(240, 249, 244, 0.58));
+    }
+
     .feature-copy {
       max-width: 800px;
       margin: 0 auto;
@@ -495,10 +547,6 @@
       text-align: left;
     }
 
-    .abstract-section {
-      max-width: 960px;
-    }
-
     @media (max-width: 680px) {
       main {
         width: min(100% - 24px, 1040px);
@@ -529,6 +577,15 @@
 
       .content {
         padding-top: 38px;
+      }
+
+      .section-band {
+        padding: 28px 16px;
+        border-radius: 14px;
+      }
+
+      .results-band {
+        gap: 28px;
       }
 
       .story {
@@ -642,7 +699,7 @@
           </div>
         </section>
 
-        <section class="feature" aria-labelledby="dab-title">
+        <section class="feature section-band" aria-labelledby="dab-title">
           <div class="feature-copy">
             <h2 id="dab-title">Introducing DocAttriBench</h2>
             <p class="lead">
@@ -690,108 +747,110 @@
           </figure>
         </section>
 
-        <section class="feature" aria-labelledby="generation-title">
-          <div class="feature-copy">
-            <h2 id="generation-title">Grounded Answer Generation</h2>
-            <p class="lead">
-              How well can models answer a question and localize the supporting evidence at the same time?
-            </p>
-            <p class="lead">
-              Zero-shot MLLMs often achieve reasonable answer accuracy but struggle with evidence localization. Fine-tuning on DocAttriBench substantially improves grounding performance.
-            </p>
-          </div>
-          <div class="result-grid" aria-label="Grounded Answer Generation results">
-            <article class="result-card">
-              <h3>MAPPET-7B</h3>
-              <span class="backbone">Fine-tuned Qwen2.5-VL-7B</span>
-              <strong class="metric">Avg: 33.8</strong>
-              <div class="deltas">
-                <code>+30.8 vs. backbone</code>
-                <code>+9.5 vs. VISA</code>
-              </div>
-            </article>
-            <article class="result-card">
-              <h3>MAPPET-8B</h3>
-              <span class="backbone">Fine-tuned Qwen3-VL-8B</span>
-              <strong class="metric">Avg: 37.0</strong>
-              <div class="deltas">
-                <code>+27.6 vs. backbone</code>
-                <code>+12.7 vs. VISA</code>
-              </div>
-            </article>
-            <article class="result-card">
-              <h3>MAPPET-I-8B</h3>
-              <span class="backbone">Fine-tuned InternVL3.5-8B</span>
-              <strong class="metric">Avg: 33.4</strong>
-              <div class="deltas">
-                <code>+28.1 vs. backbone</code>
-                <code>+9.1 vs. VISA</code>
-              </div>
-            </article>
-          </div>
-          <figure class="figure">
-            <img src="images/Tab5.png" alt="Grounded Answer Generation benchmark table.">
-          </figure>
-        </section>
+        <div class="section-band results-band">
+          <section class="feature" aria-labelledby="generation-title">
+            <div class="feature-copy">
+              <h2 id="generation-title">Grounded Answer Generation</h2>
+              <p class="lead">
+                How well can models answer a question and localize the supporting evidence at the same time?
+              </p>
+              <p class="lead">
+                Zero-shot MLLMs often achieve reasonable answer accuracy but struggle with evidence localization. Fine-tuning on DocAttriBench substantially improves grounding performance.
+              </p>
+            </div>
+            <div class="result-grid" aria-label="Grounded Answer Generation results">
+              <article class="result-card">
+                <h3>MAPPET-7B</h3>
+                <span class="backbone">Fine-tuned Qwen2.5-VL-7B</span>
+                <strong class="metric">Avg: 33.8</strong>
+                <div class="deltas">
+                  <code>+30.8 vs. backbone</code>
+                  <code>+9.5 vs. VISA</code>
+                </div>
+              </article>
+              <article class="result-card">
+                <h3>MAPPET-8B</h3>
+                <span class="backbone">Fine-tuned Qwen3-VL-8B</span>
+                <strong class="metric">Avg: 37.0</strong>
+                <div class="deltas">
+                  <code>+27.6 vs. backbone</code>
+                  <code>+12.7 vs. VISA</code>
+                </div>
+              </article>
+              <article class="result-card">
+                <h3>MAPPET-I-8B</h3>
+                <span class="backbone">Fine-tuned InternVL3.5-8B</span>
+                <strong class="metric">Avg: 33.4</strong>
+                <div class="deltas">
+                  <code>+28.1 vs. backbone</code>
+                  <code>+9.1 vs. VISA</code>
+                </div>
+              </article>
+            </div>
+            <figure class="figure">
+              <img src="images/Tab5.png" alt="Grounded Answer Generation benchmark table.">
+            </figure>
+          </section>
 
-        <section class="feature" aria-labelledby="grounding-title">
-          <div class="feature-copy">
-            <h2 id="grounding-title">Grounding-only Tasks</h2>
-            <p class="lead">
-              How well can models localize supporting evidence, independently from answer generation?
-            </p>
-            <p class="lead">
-              We evaluate two complementary settings: answer locating, where the model receives the document and question, and post-hoc grounding, where the answer is also provided. Fine-tuning on DocAttriBench yields large improvements over the corresponding zero-shot backbones in both tasks.
-            </p>
-          </div>
-          <div class="result-grid" aria-label="Grounding-only task results">
-            <article class="result-card">
-              <h3>MAPPET-7B</h3>
-              <span class="backbone">Fine-tuned Qwen2.5-VL-7B</span>
-              <strong class="metric">Answer Locating: 49.2</strong>
-              <div class="deltas">
-                <code>+31.3 vs. backbone</code>
-                <code>&minus;0.4 vs. VISA</code>
-              </div>
-              <strong class="metric">Post-hoc: 53.1</strong>
-              <div class="deltas">
-                <code>+31.1 vs. backbone</code>
-                <code>+1.1 vs. VISA</code>
-              </div>
-            </article>
-            <article class="result-card">
-              <h3>MAPPET-8B</h3>
-              <span class="backbone">Fine-tuned Qwen3-VL-8B</span>
-              <strong class="metric">Answer Locating: 53.6</strong>
-              <div class="deltas">
-                <code>+32.5 vs. backbone</code>
-                <code>+4.0 vs. VISA</code>
-              </div>
-              <strong class="metric">Post-hoc: 52.2</strong>
-              <div class="deltas">
-                <code>+23.1 vs. backbone</code>
-                <code>+0.2 vs. VISA</code>
-              </div>
-            </article>
-            <article class="result-card">
-              <h3>MAPPET-I-8B</h3>
-              <span class="backbone">Fine-tuned InternVL3.5-8B</span>
-              <strong class="metric">Answer Locating: 61.7</strong>
-              <div class="deltas">
-                <code>+46.4 vs. backbone</code>
-                <code>+12.1 vs. VISA</code>
-              </div>
-              <strong class="metric">Post-hoc: 68.1</strong>
-              <div class="deltas">
-                <code>+49.7 vs. backbone</code>
-                <code>+16.1 vs. VISA</code>
-              </div>
-            </article>
-          </div>
-          <figure class="figure">
-            <img src="images/Tab6.png" alt="Grounding-only benchmark table.">
-          </figure>
-        </section>
+          <section class="feature" aria-labelledby="grounding-title">
+            <div class="feature-copy">
+              <h2 id="grounding-title">Grounding-only Tasks</h2>
+              <p class="lead">
+                How well can models localize supporting evidence, independently from answer generation?
+              </p>
+              <p class="lead">
+                We evaluate two complementary settings: answer locating, where the model receives the document and question, and post-hoc grounding, where the answer is also provided. Fine-tuning on DocAttriBench yields large improvements over the corresponding zero-shot backbones in both tasks.
+              </p>
+            </div>
+            <div class="result-grid" aria-label="Grounding-only task results">
+              <article class="result-card">
+                <h3>MAPPET-7B</h3>
+                <span class="backbone">Fine-tuned Qwen2.5-VL-7B</span>
+                <strong class="metric">Answer Locating: 49.2</strong>
+                <div class="deltas">
+                  <code>+31.3 vs. backbone</code>
+                  <code>&minus;0.4 vs. VISA</code>
+                </div>
+                <strong class="metric">Post-hoc: 53.1</strong>
+                <div class="deltas">
+                  <code>+31.1 vs. backbone</code>
+                  <code>+1.1 vs. VISA</code>
+                </div>
+              </article>
+              <article class="result-card">
+                <h3>MAPPET-8B</h3>
+                <span class="backbone">Fine-tuned Qwen3-VL-8B</span>
+                <strong class="metric">Answer Locating: 53.6</strong>
+                <div class="deltas">
+                  <code>+32.5 vs. backbone</code>
+                  <code>+4.0 vs. VISA</code>
+                </div>
+                <strong class="metric">Post-hoc: 52.2</strong>
+                <div class="deltas">
+                  <code>+23.1 vs. backbone</code>
+                  <code>+0.2 vs. VISA</code>
+                </div>
+              </article>
+              <article class="result-card">
+                <h3>MAPPET-I-8B</h3>
+                <span class="backbone">Fine-tuned InternVL3.5-8B</span>
+                <strong class="metric">Answer Locating: 61.7</strong>
+                <div class="deltas">
+                  <code>+46.4 vs. backbone</code>
+                  <code>+12.1 vs. VISA</code>
+                </div>
+                <strong class="metric">Post-hoc: 68.1</strong>
+                <div class="deltas">
+                  <code>+49.7 vs. backbone</code>
+                  <code>+16.1 vs. VISA</code>
+                </div>
+              </article>
+            </div>
+            <figure class="figure">
+              <img src="images/Tab6.png" alt="Grounding-only benchmark table.">
+            </figure>
+          </section>
+        </div>
 
         <section class="feature" aria-labelledby="qualitative-title">
           <div class="feature-copy">
@@ -862,7 +921,7 @@
         </section>
       </div>
 
-      <section class="abstract-section" aria-labelledby="abstract-title">
+      <section class="abstract-section section-band" aria-labelledby="abstract-title">
         <h2 id="abstract-title">Abstract</h2>
         <p class="abstract">
           Answer grounding in document visual question answering remains an open challenge: most benchmarks lack grounding annotations or provide limited-quality labels, while constructing grounded datasets still requires costly manual effort. We introduce DocAttriBench (DAB), a large-scale benchmark for fine-grained, element-level source attribution in Document VQA, grounding answers to specific layout elements such as text blocks, tables, and images. To build DAB, we propose a Mask-based Perplexity-Derived Attribution method (MAPPET) that combines document layout and language modeling to identify the most informative element for each answer. MAPPET measures the increase in perplexity after masking candidate elements and attributes the answer to the element contributing most to model confidence. Applying MAPPET to multiple existing Document VQA datasets yields DAB, with 237k documents and 296k question-answer pairs with element-level grounding. We benchmark grounding-capable multimodal LLMs on DAB, evaluating answer accuracy, attribution accuracy, and overall answer quality. Results show that while larger models generally achieve higher answer accuracy, even the strongest models often fail to localize the supporting elements. DAB provides a scalable benchmark for developing grounded, verifiable, and trustworthy Document VQA models.
