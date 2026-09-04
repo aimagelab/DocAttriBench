@@ -260,6 +260,13 @@
         linear-gradient(180deg, rgba(242, 250, 245, 0.94), rgba(255, 255, 255, 0.9));
     }
 
+    .abstract-section h2,
+    .abstract {
+      max-width: 860px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
     .feature-copy {
       max-width: 800px;
       margin: 0 auto;
@@ -530,11 +537,16 @@
     }
 
     .abstract {
-      margin: 0;
+      margin: 0 auto;
       color: #34403a;
       font-size: 1.08rem;
       line-height: 1.78;
       text-align: left;
+    }
+
+    .paper-term {
+      color: var(--accent);
+      font-weight: 800;
     }
 
     @media (max-width: 680px) {
@@ -914,7 +926,7 @@
       <section class="abstract-section section-band" aria-labelledby="abstract-title">
         <h2 id="abstract-title">Abstract</h2>
         <p class="abstract">
-          Answer grounding in document visual question answering remains an open challenge: most benchmarks lack grounding annotations or provide limited-quality labels, while constructing grounded datasets still requires costly manual effort. We introduce DocAttriBench (DAB), a large-scale benchmark for fine-grained, element-level source attribution in Document VQA, grounding answers to specific layout elements such as text blocks, tables, and images. To build DAB, we propose a Mask-based Perplexity-Derived Attribution method (MAPPET) that combines document layout and language modeling to identify the most informative element for each answer. MAPPET measures the increase in perplexity after masking candidate elements and attributes the answer to the element contributing most to model confidence. Applying MAPPET to multiple existing Document VQA datasets yields DAB, with 237k documents and 296k question-answer pairs with element-level grounding. We benchmark grounding-capable multimodal LLMs on DAB, evaluating answer accuracy, attribution accuracy, and overall answer quality. Results show that while larger models generally achieve higher answer accuracy, even the strongest models often fail to localize the supporting elements. DAB provides a scalable benchmark for developing grounded, verifiable, and trustworthy Document VQA models.
+          Answer grounding in document visual question answering remains an open challenge: most benchmarks lack grounding annotations or provide limited-quality labels, while constructing grounded datasets still requires costly manual effort. We introduce <span class="paper-term">DocAttriBench</span> (<span class="paper-term">DAB</span>), a large-scale benchmark for fine-grained, element-level source attribution in Document VQA, grounding answers to specific layout elements such as text blocks, tables, and images. To build <span class="paper-term">DAB</span>, we propose a Mask-based Perplexity-Derived Attribution method (<span class="paper-term">MAPPET</span>) that combines document layout and language modeling to identify the most informative element for each answer. <span class="paper-term">MAPPET</span> measures the increase in perplexity after masking candidate elements and attributes the answer to the element contributing most to model confidence. Applying <span class="paper-term">MAPPET</span> to multiple existing Document VQA datasets yields <span class="paper-term">DAB</span>, with 237k documents and 296k question-answer pairs with element-level grounding. We benchmark grounding-capable multimodal LLMs on <span class="paper-term">DAB</span>, evaluating answer accuracy, attribution accuracy, and overall answer quality. Results show that while larger models generally achieve higher answer accuracy, even the strongest models often fail to localize the supporting elements. <span class="paper-term">DAB</span> provides a scalable benchmark for developing grounded, verifiable, and trustworthy Document VQA models.
         </p>
       </section>
     </div>
