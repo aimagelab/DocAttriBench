@@ -219,43 +219,19 @@
     }
 
     .section-band {
-      position: relative;
-      overflow: hidden;
-      width: min(100%, 1000px);
-      max-width: 1000px;
-      padding: 34px 28px;
-      border: 1px solid rgba(47, 143, 91, 0.12);
-      border-radius: 18px;
+      width: 100vw;
+      max-width: none;
+      margin-left: calc(50% - 50vw);
+      padding: 48px max(18px, calc((100vw - 1040px) / 2 + 18px));
       background:
-        radial-gradient(circle at 12% 10%, rgba(47, 143, 91, 0.12), transparent 28%),
-        radial-gradient(circle at 86% 18%, rgba(199, 237, 214, 0.52), transparent 30%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(237, 248, 241, 0.56));
-    }
-
-    .section-band::before {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      background:
-        linear-gradient(90deg, rgba(47, 143, 91, 0.12), rgba(47, 143, 91, 0.03)) 4% 20% / 142px 2px no-repeat,
-        linear-gradient(90deg, rgba(47, 143, 91, 0.09), rgba(47, 143, 91, 0.02)) 4% 30% / 104px 2px no-repeat,
-        linear-gradient(135deg, rgba(255, 255, 255, 0.58), rgba(199, 237, 214, 0.24)) 91% 10% / 124px 156px no-repeat;
-      content: "";
-      opacity: 0.68;
-    }
-
-    .section-band > * {
-      position: relative;
-      z-index: 1;
+        linear-gradient(180deg, rgba(236, 248, 241, 0.78), rgba(248, 252, 249, 0.86));
     }
 
     .results-band {
       display: grid;
       gap: 34px;
       background:
-        radial-gradient(circle at 14% 16%, rgba(47, 143, 91, 0.13), transparent 28%),
-        radial-gradient(circle at 88% 46%, rgba(199, 237, 214, 0.54), transparent 32%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(238, 248, 242, 0.62));
+        linear-gradient(180deg, rgba(232, 246, 238, 0.82), rgba(246, 251, 248, 0.92));
     }
 
     .results-band .feature {
@@ -263,11 +239,9 @@
     }
 
     .abstract-section {
-      max-width: 1000px;
       margin-top: 2px;
       background:
-        radial-gradient(circle at 90% 10%, rgba(47, 143, 91, 0.1), transparent 26%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(240, 249, 244, 0.58));
+        linear-gradient(180deg, rgba(242, 250, 245, 0.94), rgba(255, 255, 255, 0.9));
     }
 
     .feature-copy {
@@ -580,8 +554,8 @@
       }
 
       .section-band {
-        padding: 28px 16px;
-        border-radius: 14px;
+        padding-top: 36px;
+        padding-bottom: 36px;
       }
 
       .results-band {
