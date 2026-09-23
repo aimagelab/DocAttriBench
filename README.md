@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-  <a href="[https://arxiv.org/abs/2609.20574">
+  <a href="https://arxiv.org/abs/2609.20574">
     <img src="https://img.shields.io/badge/Paper-arxiv.2508.20181-B31B1B.svg" alt="Paper">
   </a>
   <a href="https://aimagelab.github.io/DocAttriBench/">
