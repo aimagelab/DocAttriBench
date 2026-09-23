@@ -3,6 +3,9 @@
 </h1>
 
 <p align="center">
+  <a href="[https://arxiv.org/abs/2609.20574">
+    <img src="https://img.shields.io/badge/Paper-arxiv.2508.20181-B31B1B.svg" alt="Paper">
+  </a>
   <a href="https://aimagelab.github.io/DocAttriBench/">
     <img src="https://img.shields.io/badge/🌐-Project%20Page-blue.svg" alt="Project Page">
   </a>
@@ -13,23 +16,4 @@
 
 ## 📢 Latest Updates
   - [2026/08/17] Repo work in progress!
-
-## Overview
-
-## Table of Contents
-
-## Enviroment Setup
-
-The following code was tested using:
-- Python 3.10
-- CUDA 12.6
-- vLLM
-
-For training and Inference we used a single conda enviroment:
-- dab
-
-## Datasets
-
-## Training Models
-
-## Models Checkpoints
+  - [2026/08/22] Dataset available in the Hugging Face collection!
