@@ -16,16 +16,6 @@
 
 This repository contains the reference code for the paper [DocAttriBench: Benchmarking Answer Grounding in Document Visual Question Answering](https://arxiv.org/abs/2609.20574), **BMVC 2026**.
 
-Please cite with the following BibTeX:
-```bibtex
-@inproceedings{degrandis2026docattribench,
-  title     = {{DocAttriBench: Benchmarking Answer Grounding in Document Visual Question Answering}},
-  author    = {De Grandis, Luca and Cappelletti, Silvia and Raccagni, William and Cornia, Marcella and Baraldi, Lorenzo and Cucchiara, Rita},
-  booktitle = {Proceedings of the British Machine Vision Conference},
-  year      = {2026}
-}
-```
-
 ## 📢 Latest Updates
   - **[2026/08/17]** Repo work in progress!
   - **[2026/08/22]** Dataset available in the Hugging Face collection!
