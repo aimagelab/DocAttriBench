@@ -21,7 +21,7 @@ readonly LOG_DIR="${ROOT}/logs/model_merge"
 readonly PYTHON_SCRIPT="${ROOT}/scripts/model_merge/${SCRIPT}.py"
 readonly BASE_MODEL_DIR="${ROOT}/models/Qwen/Qwen3-VL-8B-Instruct"
 readonly CHECKPOINT_DIR="${ROOT}/models_checkpoints/Mappet/Mappet3-VL-8B-Instruct"
-readonly OUTPUT_DIR="${ROOT}/models/Mappet/Mappet3-VL-8B-Instruct"
+readonly OUTPUT_DIR="${ROOT}/models/Mappet/Mappet-8B"
 
 die() {
     printf 'ERROR: %s\n' "$*" >&2

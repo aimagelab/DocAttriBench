@@ -1,9 +1,8 @@
-# multi-gpu
 import os
 
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True" # TRY FIX
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
-
+from pathlib import Path
 import argparse
 import logging
 import random
@@ -14,7 +13,7 @@ import json
 import tqdm
 import math
 import copy
-# import os #importato sopra
+import sys
 import gc
 import re
 
@@ -32,6 +31,11 @@ from torchvision.transforms.functional import InterpolationMode
 
 from transformers import AutoModel, AutoTokenizer, get_cosine_schedule_with_warmup
 from peft import LoraConfig, get_peft_model, PeftModel
+
+sys.path.insert(
+    0,
+    str(Path(__file__).resolve().parent.parent / "utils")
+)
 
 from visual_source_attribution.utils.files import read_json_file
 
@@ -170,7 +174,6 @@ def parse_args():
     parser.add_argument('--lora_dropout', type=float, default=0.05, help='LoRA dropout')
     parser.add_argument('--lora_bias', type=str, default='none', choices=['none','all','lora_only'], help='Bias type for LoRA')
     parser.add_argument('--lora_target_modules', type=str, nargs='*', default=['q_proj','k_proj','v_proj','o_proj','gate_proj','up_proj','down_proj'], help='Target module names for LoRA')
-    # parser.add_argument('--lora_modules_to_save', type=str, nargs='*', default=['lm_head'], help='Modules to keep trainable/save alongside adapters') # OLD
     parser.add_argument('--lora_modules_to_save', type=str, nargs='*', default=[], help='Modules to keep trainable/save alongside adapters')
 
     # ---- resume ----
@@ -180,11 +183,6 @@ def parse_args():
 
 
 TRAINING_TEMPLATES = dict()
-
-#----------------
-# ANSWER BOX
-#----------------
-
 
 TRAINING_TEMPLATES["answerBox"] = dict()
 
@@ -211,11 +209,6 @@ If you cannot find the answer, respond with "I don't know".""",
     "user_template": """{query}""",
     "assistant_template": """I don't know.""",
 }
-
-
-#----------------
-# BOX (FROM ANSWER)
-#----------------
 
 
 TRAINING_TEMPLATES["boxFromAnswer"] = dict()
@@ -253,11 +246,6 @@ Answer:
 }
 
 
-#----------------
-# BOX
-#----------------
-
-
 TRAINING_TEMPLATES["box"] = dict()
 
 
@@ -283,45 +271,6 @@ If you cannot find the answer, respond with the empty box <box> </box>.""",
 }
 
 
-# def qwen_2_5_image_scaler(
-#     img: Image.Image,
-#     target_size: int = 1024,
-#     min_pixels: int = 3136,
-#     max_pixels: int = 12845056,
-# ) -> Tuple[Image.Image, int, int]:
-#     w, h = img.size
-
-#     max_dim = max([w, h])
-#     ratio = target_size / max_dim
-#     new_w, new_h = int(w * ratio), int(h * ratio)
-
-#     resized_w = int(math.floor(new_w / 28) * 28)
-#     resized_h = int(math.floor(new_h / 28) * 28)
-
-#     pixels = resized_w * resized_h
-
-#     if pixels > max_pixels:
-#         p_ratio = math.sqrt(max_pixels / pixels)
-
-#         resized_w = resized_w * p_ratio
-#         resized_h = resized_h * p_ratio
-
-#         resized_w = int(math.floor(resized_w / 28) * 28)
-#         resized_h = int(math.floor(resized_h / 28) * 28)
-
-#     if pixels < min_pixels:
-#         p_ratio = math.sqrt(min_pixels / pixels)
-
-#         resized_w = resized_w * p_ratio
-#         resized_h = resized_h * p_ratio
-
-#         resized_w = int(math.ceil(resized_w / 28) * 28)
-#         resized_h = int(math.ceil(resized_h / 28) * 28)
-
-#     img = img.resize((resized_w, resized_h))
-
-#     return img, resized_w, resized_h
-
 def internvl_2_5_image_scaler(
     img: Image.Image,
     target_size: int = 1024,
@@ -333,10 +282,6 @@ def internvl_2_5_image_scaler(
     max_dim = max([w, h])
     ratio = target_size / max_dim
     new_w, new_h = int(w * ratio), int(h * ratio)
-
-    # img = img.resize((new_w, new_h))
-
-    # return img, new_w, new_h
 
     resized_w = new_w
     resized_h = new_h
@@ -373,14 +318,12 @@ def setup_logger(log_file: str, log_level: str = "INFO"):
     logger.setLevel(getattr(logging, log_level.upper(), logging.INFO))
     formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 
-    # Remove all handlers associated with the root logger object
     if logger.hasHandlers():
         logger.handlers.clear()
     file_handler = logging.FileHandler(log_file, mode="a")
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
-    # Also log to console
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
@@ -416,45 +359,14 @@ def standardize_boxes(dataset: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 def assign_template(dataset: List[Dict[str, Any]], random_seed: int = 658) -> List[Dict[str, Any]]:
     random.seed(random_seed)
     
-    # choose template (box, answerobx, ecc)
     templates = random.choices(list(TRAINING_TEMPLATES.keys()), k=len(dataset))
     
-    
-    
-    # # choose if postive or negative
-    # pos_neg = random.choices(["positive", "negative"], k=len(dataset), weights=[0.8,0.2])
-    
-    # for line, template, pos_ in zip(dataset, templates, pos_neg):
-    #     line["template"] = f"{template}|{pos_}"
-
-    # return dataset
-    
-    # FORCING POSITIVES
     for line, template in zip(dataset, templates):
-        # forza sempre positive
         line["template"] = f"{template}|positive"
 
     return dataset
 
 
-# def filter_dataset(dataset):
-#     new_dataset = list()
-#     for ith_item in dataset:
-#         if ith_item["query"] == "":
-#             continue
-#         if not ith_item["bbox"]:
-#             continue
-#         if not ith_item["answer"]:
-#             continue
-#         if len(ith_item["bbox"]) != len(ith_item["answer"]):
-#             continue
-#         if not os.path.exists(ith_item['image_path']):
-#             continue
-#         new_dataset.append(ith_item)
-    
-#     return new_dataset
-
-# NEW FOR DEBUG
 def filter_dataset(dataset):
     stats = {
         "total": 0,
@@ -536,7 +448,6 @@ def load_dataset(dataset_dir: str, split_list = List[Literal["train", "val", "te
     for key in datasets:
         logging.info(f"Dataset split pre filtering {key} -> {len(datasets[key])}")
         
-        # DEBUG
         if len(datasets[key]) > 0:
             sample = datasets[key][0]
             logging.info(
@@ -623,8 +534,6 @@ def prepare_dataset(dataset_dir):
                     _el["image_path"] = new_img_path
                     break
 
-
-    # DEBUG
     for split in datasets:
         logging.info(f"[PREPARE DATASET] {split} size = {len(datasets[split])}")
 
@@ -694,22 +603,6 @@ def dynamic_preprocess(image, min_num=1, max_num=12, image_size=448, use_thumbna
         processed_images.append(thumbnail_img)
     return processed_images
 
-# OLD codex CODE
-# def load_image(image_path: str, input_size: int = 448, max_num: int = 12) -> torch.Tensor:
-#     with Image.open(image_path) as img_tmp:
-#         img = img_tmp.convert("RGB")
-
-#     transform = build_transform(input_size=input_size)
-#     image_tiles = dynamic_preprocess(
-#         img,
-#         image_size=input_size,
-#         use_thumbnail=True,
-#         max_num=max_num,
-#     )
-#     pixel_values = [transform(tile) for tile in image_tiles]
-#     return torch.stack(pixel_values)
-# / OLD codex CODE
-
 def load_image(image_path: str,
                input_size: int = 448,
                max_num: int = 12,
@@ -745,6 +638,7 @@ def old_load_image(image_path: str, target_size: int = 1024, max_pixel_count: in
         target_size *= 2.0
     
     if sample_img_size:
+        # Preserve the historical RNG draw even though image-size jitter is disabled.
         extra_dim = random.randint(0, 500)
         extra_dim = 0
         target_size += extra_dim
@@ -753,7 +647,7 @@ def old_load_image(image_path: str, target_size: int = 1024, max_pixel_count: in
 
     return img, w, h
 
-def prepare_messages(input_dict): # no load image here needed
+def prepare_messages(input_dict):
     data = copy.deepcopy(input_dict)
     template_name, pos_neg = data["template"].split("|")
 
@@ -761,11 +655,6 @@ def prepare_messages(input_dict): # no load image here needed
     user_template = TRAINING_TEMPLATES[template_name][pos_neg]["user_template"]
     assistant_template = TRAINING_TEMPLATES[template_name][pos_neg]["assistant_template"]
 
-    # we don't need here load image
-
-    # qwen 2.5 OLD CODE
-    # data["box_str"] = [box_to_string(standardize_box(box, w, h)) for box in data['bbox']]
-    # qwen 3 - internvl should be aligned with qwen 3 method
     data["box_str"] = [box_to_string(standardize_box(box, 1000, 1000)) for box in data['bbox']]
     
     if template_name == "answerBox":
@@ -778,49 +667,34 @@ def prepare_messages(input_dict): # no load image here needed
         data["box_str"] = " ".join(data["box_str"])
 
     system_text = system_template.format(**data)
-    # user_text = "<image>\n" + user_template.format(**data) # image + question
-    user_text = user_template.format(**data) # image + question
+    user_text = user_template.format(**data)
     assistant_text = assistant_template.format(**data)
 
     return system_text, user_text, assistant_text, data["image_path"]
 
-# WHAT IS USED FOR? DOUBT but ok for now
 def _inject_image_tokens(prompt: str, num_patches: int, num_image_token: int) -> str:
+    # Replace one image placeholder with the exact visual-token span InternVL expects.
     image_tokens = "<img>" + ("<IMG_CONTEXT>" * (num_image_token * num_patches)) + "</img>"
     if "<image>" not in prompt:
         prompt = "<image>\n" + prompt
     return prompt.replace("<image>", image_tokens, 1)
 
 def custom_collator(batch, tokenizer, collator_args, num_image_token, sample_img_size=False):
-    # OLD CODEX CODE
-    # del sample_img_size  # not used for InternVL Instruct dynamic tiling
-    # / OLD CODEX CODE
-
-    # Lists inizialitazion
     input_ids_list = []
     attention_masks_list = []
     labels_list = []
     pixel_values_list = []
     image_flags_list = []
 
-    # Macro varaibles
     truncation = collator_args["truncation"]
     max_length = collator_args["max_length"]
-    image_size = collator_args["image_size"] # internvl image size for each tiles
-    max_pixel_count = collator_args["max_pixel_counts"] # NEW LINE MODIFICATION - NOT AN OLD CODEX CODE but required
-    max_dynamic_patches = collator_args["max_dynamic_patches"] # max number of patches
+    image_size = collator_args["image_size"]
+    max_pixel_count = collator_args["max_pixel_counts"]
+    max_dynamic_patches = collator_args["max_dynamic_patches"]
 
     for item in batch:
         system_text, user_text, assistant_text, image_path = prepare_messages(item)
-        # OLD CODEX CODE
-        # pixel_values = load_image(
-        #     image_path=image_path,
-        #     input_size=image_size,
-        #     max_num=max_dynamic_patches,
-        # )
-        # / OLD CODEX CODE
-
-        # NEW CODE
+        
         pixel_values = load_image(
             image_path=image_path,
             input_size=image_size,
@@ -829,9 +703,7 @@ def custom_collator(batch, tokenizer, collator_args, num_image_token, sample_img
             max_pixel_count=max_pixel_count,
             sample_img_size=sample_img_size
         )
-        # / NEW CODE
-
-        num_patches = pixel_values.shape[0] # Prende il numero di patch dalla prima dimensione del tensore
+        num_patches = pixel_values.shape[0]
 
         user_with_image = f"<image>\n{user_text}"
         user_with_image = _inject_image_tokens(user_with_image, num_patches, num_image_token)
@@ -856,10 +728,6 @@ def custom_collator(batch, tokenizer, collator_args, num_image_token, sample_img
             tokenize=False,
             add_generation_prompt=False,
         )
-
-        # DOUBT but ok for now
-        # prompt_text = _inject_image_tokens(prompt_text, num_patches, num_image_token)
-        # full_text = _inject_image_tokens(full_text, num_patches, num_image_token)
 
         prompt_ids = tokenizer(
             prompt_text,
@@ -1011,30 +879,10 @@ def get_validation_loss(model, validation_loader, device, is_sharded=False):
     
     return val_loss
 
-    # model.eval()
-    # val_loss = 0.0
-
-    # with torch.no_grad():
-    #     for batch in tqdm.tqdm(validation_loader, desc="Validating"):
-    #         batch = {k: v.to(device, non_blocking=True) for k, v in batch.items()}
-    #         outputs = model(**batch, output_hidden_states=False)
-
-    #         val_loss += outputs.loss.item()
-
-    #         del outputs
-    #         del batch
-
-    # torch.cuda.synchronize()
-    # torch.cuda.empty_cache()
-
-    # model.train()
-    # return val_loss / len(validation_loader)
-
 
 def clean_mid_checkpoints(checkpoint_dir: str, keep_n: int = 2) -> None:
     """Remove older training state files and their corresponding PEFT adapter dirs."""
     state_paths = glob.glob(f"{checkpoint_dir}/chkp_*.pt")
-    # Extract step numbers
     def extract_step(p: str) -> int:
         try:
             return int(p.split("_")[-1].replace(".pt", ""))
@@ -1045,13 +893,11 @@ def clean_mid_checkpoints(checkpoint_dir: str, keep_n: int = 2) -> None:
     tbd = state_paths[keep_n:]
     for path in tbd:
         step = path.split("_")[-1].replace(".pt", "")
-        # Remove state file
         try:
             os.remove(path)
             logging.info(f"[WARNING] Checkpoint clean executed! Deleted old checkpoint state: {path}")
         except FileNotFoundError:
             pass
-        # Remove corresponding PEFT adapter dir if present
         peft_dir = os.path.join(checkpoint_dir, f"peft_chkp_{step}")
         if os.path.isdir(peft_dir):
             shutil.rmtree(peft_dir, ignore_errors=True)
@@ -1079,8 +925,6 @@ def main():
     MAX_DYNAMIC_PATCHES = args.max_dynamic_patches
     NUM_SAVE_STEPS = args.num_save_steps
 
-    # ---- logger ----
-
     setup_logger(args.log_file)
 
     logging.info("[SETTINGS]")
@@ -1105,7 +949,6 @@ def main():
 
     os.makedirs(CHECKPOINT_DIR, exist_ok=True)
     
-    # Create metrics log file
     metrics_log_path = os.path.join(OUTPUT_DIR, "training_metrics.jsonl")
     logging.info(f"Metrics will be logged to        ->      {metrics_log_path}")
 
@@ -1120,7 +963,6 @@ def main():
         train_dataset.extend(train_val_datasets.get("train", []))
         validation_dataset.extend(train_val_datasets.get("val", []))
         
-        #DEBUG
         logging.info(f"[MAIN] Accumulated train size: {len(train_dataset)}")
         logging.info(f"[MAIN] Accumulated val size: {len(validation_dataset)}")
 
@@ -1145,14 +987,6 @@ def main():
     g = torch.Generator()
     g.manual_seed(DATALOADER_SEED)
 
-    # OLD CODEX CODE
-    # collator_args = {
-    #     "truncation": False,
-    #     "max_length": MAX_TOKENS,
-    #     "image_size": INTERNVL_IMAGE_SIZE,
-    #     "max_dynamic_patches": MAX_DYNAMIC_PATCHES,
-    # }
-    # / OLD CODEX CODE
     collator_args = {
         "truncation": False,
         "max_length": MAX_TOKENS,
@@ -1161,7 +995,6 @@ def main():
         "max_dynamic_patches": MAX_DYNAMIC_PATCHES,
     }
     
-    # --- DEBUG for dataset loading ----
     if len(train_dataset) == 0:
         raise RuntimeError(
             "❌ Train dataset is EMPTY after preprocessing.\n"
@@ -1170,9 +1003,6 @@ def main():
     if len(validation_dataset) == 0:
         logging.warning("⚠️ Validation dataset is EMPTY.")
         
-    # --- / DEBUG for dataset loading ----
-
-
     # ---- Model Set Up ----
 
     logging.info("************************ START OF RUN ************************")
@@ -1186,13 +1016,12 @@ def main():
         device_map="auto",
         trust_remote_code=True,
     )
-    # doubt but ok for now
+    # InternVL uses this token id to locate positions replaced by visual embeddings.
     base_model.img_context_token_id = tokenizer.convert_tokens_to_ids("<IMG_CONTEXT>")
     if hasattr(base_model, "config") and hasattr(base_model.config, "use_cache"):
         base_model.config.use_cache = False
     base_model.gradient_checkpointing_enable()
     logging.info("Model loaded correctly.")
-    # doubt but ok for now
     num_image_token = getattr(base_model, "num_image_token", 256)
 
     # --- Validation loader ---
@@ -1214,12 +1043,10 @@ def main():
 
     # ---- LoRA ----
 
-    # Prepare LoRA config upfront
     lora_config = None
     model = base_model
 
     if args.use_peft:
-        # Freeze base model layers for adapter training
         for _, param in base_model.named_parameters():
             param.requires_grad = False
         
@@ -1239,7 +1066,6 @@ def main():
                 logging.info(f"Found PEFT checkpoint at step {peft_global_step}: {peft_checkpoint_dir}")
         
         if peft_checkpoint_dir is not None:
-            # 🔥 RESUME CORRETTO
             model = PeftModel.from_pretrained(
                 base_model,
                 peft_checkpoint_dir,
@@ -1249,7 +1075,6 @@ def main():
             model.print_trainable_parameters()
             logging.info(f"Loaded LoRA adapters from checkpoint {peft_checkpoint_dir}.")
         else:
-            # 🆕 TRAIN DA ZERO
             lora_config = LoraConfig(
                 r=args.lora_r,
                 lora_alpha=args.lora_alpha,
@@ -1257,7 +1082,7 @@ def main():
                 bias=args.lora_bias,
                 target_modules=args.lora_target_modules,
                 modules_to_save=args.lora_modules_to_save,
-                task_type=None # Important for Instruct version
+                task_type=None  # Required for the remote-code InternVL model.
             )
             model = get_peft_model(base_model, lora_config)
             model.img_context_token_id = base_model.img_context_token_id
@@ -1274,15 +1099,12 @@ def main():
     optimizer = torch.optim.AdamW(
         filter(lambda p: p.requires_grad, model.parameters()),
         lr=LEARNING_RATE,
-        # foreach=False,   # ← TRY FIX for distribution
     )
 
-    # Calcolo numero step totali ORIGINALI
-    # num_training_steps = int(len(train_dataloader) * EPOCHS / GRADIENT_ACCUMULATION_STEPS) # OLD
+    # Match the original full-dataset schedule even when resuming from a subset.
     total_batches_full = int(len(train_dataset) / BATCH_SIZE)
     total_optimizer_steps_full = int(total_batches_full * EPOCHS / GRADIENT_ACCUMULATION_STEPS)
 
-    # scheduler = get_cosine_schedule_with_warmup(optimizer, num_warmup_steps=NUM_WARMUP_STEPS, num_training_steps=num_training_steps) # OLD
     scheduler = get_cosine_schedule_with_warmup(
         optimizer,
         num_warmup_steps=NUM_WARMUP_STEPS,
@@ -1307,7 +1129,7 @@ def main():
         optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
         scheduler.load_state_dict(checkpoint["scheduler_state_dict"])
 
-        # ⚡ FIX per allineare i tensor dell'optimizer al device del modello
+        # torch.load may restore optimizer tensors on a device different from the model.
         for state in optimizer.state.values():
             for k, v in state.items():
                 if isinstance(v, torch.Tensor):
@@ -1325,41 +1147,16 @@ def main():
             f"lr={optimizer.param_groups[0]['lr']}"
         )
 
-    # ---- DEBUG: Controllo dtype dei parametri ----
-    logging.info("==== DEBUG DTYPE CHECK ====")
-
-    # Controllo dtype dei parametri del modello base
-    for name, param in base_model.named_parameters():
-        print(f"[BASE] {name}: {param.device}, {param.dtype}")
-
-    # Se hai LoRA caricato
-    if args.use_peft:
-        for name, param in model.named_parameters():
-            print(f"[PEFT] {name}: {param.device}, {param.dtype}")
-
-    # Controllo dtype dei tensori dell'optimizer
-    for i, group in enumerate(optimizer.param_groups):
-        for j, p in enumerate(group['params']):
-            print(f"[OPT] group {i} param {j}: device={p.device}, dtype={p.dtype}")
-
-    logging.info("==== END DEBUG DTYPE CHECK ====")
-
-    # ---- new data loader for train ----
-
-    # ------------------------------
-    # Resume-aware DataLoader
-    # ------------------------------
+    # Reconstruct the first epoch's shuffle and skip batches already processed.
 
     if args.restore_checkpoint and global_step > 0:
 
         logging.info(f"Resuming from global_step={global_step}")
 
-        # Ricrea lo stesso shuffle deterministico
-        rng = torch.Generator() # restart the shufller
+        rng = torch.Generator()
         rng.manual_seed(DATALOADER_SEED)
         shuffled_indices = torch.randperm(len(train_dataset), generator=rng).tolist()
 
-        # Calcola quanti sample sono già stati consumati
         samples_already_seen = global_step * BATCH_SIZE
 
         logging.info(f"Skipping {samples_already_seen} samples already processed.")
@@ -1371,7 +1168,7 @@ def main():
         train_dataloader = DataLoader(
             train_subset,
             batch_size=BATCH_SIZE,
-            shuffle=False,  # IMPORTANTISSIMO
+            shuffle=False,
             num_workers=0,
             collate_fn=partial(
                 custom_collator,
@@ -1400,10 +1197,6 @@ def main():
         )
 
     
-    # ---- / new data loader for train ----
-    
-
-    # --- Params printing ---
     trainable_params = 0
     total_params = 0
     for _, param in model.named_parameters():
@@ -1414,9 +1207,6 @@ def main():
     logging.info(f"Total parameters: {total_params}")
     logging.info(f"Trainable parameters: {trainable_params}")
     logging.info(f"Percentage trainable: {round(percent, 3)}")
-    # --- / Params printing ---
-
-
     # ---- training loop ----
 
     model.train()
@@ -1430,14 +1220,12 @@ def main():
     for batch_idx, batch in enumerate(train_dataloader, start=global_step):
         batch = _prepare_batch_for_model(batch, computation_device, is_sharded)
 
-        with autocast(device_type="cuda", dtype=torch.bfloat16): # adding autocast before calculating output and loss FOR SCALER
+        with autocast(device_type="cuda", dtype=torch.bfloat16):
             outputs = model(**batch, output_hidden_states=False)
             loss = outputs.loss
             logging.info(f"[TRAIN] Train loss {loss}")
 
-        # accumulate for logging only
-        ga_loss += loss.item() / BATCH_SIZE # DA RIVEDERE
-        # scale loss for gradient accumulation and backprop every step
+        ga_loss += loss.item() / BATCH_SIZE
         (loss / GRADIENT_ACCUMULATION_STEPS).backward()
         global_step += 1
 
@@ -1451,10 +1239,6 @@ def main():
             }) + "\n")
 
         del loss, outputs, batch
-        # gc.collect()
-        # torch.cuda.empty_cache()
-        # torch.cuda.ipc_collect()
-
         if (batch_idx + 1) % GRADIENT_ACCUMULATION_STEPS == 0:
             optimizer.step()
             scheduler.step()

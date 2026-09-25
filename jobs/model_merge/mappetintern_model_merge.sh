@@ -21,7 +21,7 @@ readonly LOG_DIR="${ROOT}/logs/model_merge"
 readonly PYTHON_SCRIPT="${ROOT}/scripts/model_merge/${SCRIPT}.py"
 readonly BASE_MODEL_DIR="${ROOT}/models/OpenGVLab/InternVL3_5-8B-Instruct"
 readonly CHECKPOINT_DIR="${ROOT}/models_checkpoints/Mappet/MappetIntern3.5-VL-8B-Instruct"
-readonly OUTPUT_DIR="${ROOT}/models/Mappet/MappetIntern3.5-VL-8B-Instruct"
+readonly OUTPUT_DIR="${ROOT}/models/Mappet/Mappet-I-8B"
 
 die() {
     printf 'ERROR: %s\n' "$*" >&2

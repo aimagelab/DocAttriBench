@@ -1,3 +1,4 @@
+from pathlib import Path
 import argparse
 import logging
 import random
@@ -8,6 +9,7 @@ import json
 import tqdm
 import math
 import copy
+import sys
 import os
 import gc
 
@@ -22,6 +24,11 @@ from PIL import Image
 
 from transformers import AutoProcessor, get_cosine_schedule_with_warmup
 from peft import LoraConfig, get_peft_model, PeftModel
+
+sys.path.insert(
+    0,
+    str(Path(__file__).resolve().parent.parent / "utils")
+)
 
 from visual_source_attribution.utils.files import read_json_file
 
@@ -157,28 +164,20 @@ def parse_args():
         help="How often to save the model checkpoint.",
     )
 
-    # ---- PEFT / LoRA ----
     parser.add_argument('--use_peft', action='store_true', help='Use PEFT LoRA fine-tuning')
     parser.add_argument('--lora_r', type=int, default=16, help='LoRA rank')
     parser.add_argument('--lora_alpha', type=float, default=32.0, help='LoRA alpha')
     parser.add_argument('--lora_dropout', type=float, default=0.05, help='LoRA dropout')
     parser.add_argument('--lora_bias', type=str, default='none', choices=['none','all','lora_only'], help='Bias type for LoRA')
     parser.add_argument('--lora_target_modules', type=str, nargs='*', default=['q_proj','k_proj','v_proj','o_proj','gate_proj','up_proj','down_proj'], help='Target module names for LoRA')
-    # parser.add_argument('--lora_modules_to_save', type=str, nargs='*', default=['lm_head'], help='Modules to keep trainable/save alongside adapters') # OLD
     parser.add_argument('--lora_modules_to_save', type=str, nargs='*', default=[], help='Modules to keep trainable/save alongside adapters')
 
-    # ---- resume ----
     parser.add_argument('--restore_checkpoint', action='store_true', help='Restore from latest checkpoint in output dir')
 
     return parser.parse_args()
 
 
 TRAINING_TEMPLATES = dict()
-
-#----------------
-# ANSWER BOX
-#----------------
-
 
 TRAINING_TEMPLATES["answerBox"] = dict()
 
@@ -205,11 +204,6 @@ If you cannot find the answer, respond with "I don't know".""",
     "user_template": """{query}""",
     "assistant_template": """I don't know.""",
 }
-
-
-#----------------
-# BOX (FROM ANSWER)
-#----------------
 
 
 TRAINING_TEMPLATES["boxFromAnswer"] = dict()
@@ -245,11 +239,6 @@ Answer:
 {answer}""",
     "assistant_template": """<box> </box>"""
 }
-
-
-#----------------
-# BOX
-#----------------
 
 
 TRAINING_TEMPLATES["box"] = dict()
@@ -327,14 +316,12 @@ def setup_logger(log_file: str, log_level: str = "INFO"):
     logger.setLevel(getattr(logging, log_level.upper(), logging.INFO))
     formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 
-    # Remove all handlers associated with the root logger object
     if logger.hasHandlers():
         logger.handlers.clear()
     file_handler = logging.FileHandler(log_file, mode="a")
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
-    # Also log to console
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
@@ -370,45 +357,13 @@ def standardize_boxes(dataset: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 def assign_template(dataset: List[Dict[str, Any]], random_seed: int = 658) -> List[Dict[str, Any]]:
     random.seed(random_seed)
     
-    # choose template (box, answerobx, ecc)
     templates = random.choices(list(TRAINING_TEMPLATES.keys()), k=len(dataset))
-    
-    
-    
-    # # choose if postive or negative
-    # pos_neg = random.choices(["positive", "negative"], k=len(dataset), weights=[0.8,0.2])
-    
-    # for line, template, pos_ in zip(dataset, templates, pos_neg):
-    #     line["template"] = f"{template}|{pos_}"
 
-    # return dataset
-    
-    # FORCING POSITIVES
     for line, template in zip(dataset, templates):
-        # forza sempre positive
         line["template"] = f"{template}|positive"
 
     return dataset
 
-
-# def filter_dataset(dataset):
-#     new_dataset = list()
-#     for ith_item in dataset:
-#         if ith_item["query"] == "":
-#             continue
-#         if not ith_item["bbox"]:
-#             continue
-#         if not ith_item["answer"]:
-#             continue
-#         if len(ith_item["bbox"]) != len(ith_item["answer"]):
-#             continue
-#         if not os.path.exists(ith_item['image_path']):
-#             continue
-#         new_dataset.append(ith_item)
-    
-#     return new_dataset
-
-# NEW FOR DEBUG
 def filter_dataset(dataset):
     stats = {
         "total": 0,
@@ -469,10 +424,8 @@ def load_dataset(dataset_dir: str, split_list = List[Literal["train", "val", "te
 
     logging.info(f"Loading dataset {dataset_dir} .")
 
-    # Only some splits are available for the target dataset
     valid_splits = list(filter(lambda x: os.path.exists(f"{dataset_dir}/{x}"), split_list))
 
-    # Save all splits in a dictionary
     datasets = defaultdict(list)
     for split in valid_splits:
         image_dir = f"{dataset_dir}/{split}/img"
@@ -490,7 +443,6 @@ def load_dataset(dataset_dir: str, split_list = List[Literal["train", "val", "te
     for key in datasets:
         logging.info(f"Dataset split pre filtering {key} -> {len(datasets[key])}")
         
-        # DEBUG
         if len(datasets[key]) > 0:
             sample = datasets[key][0]
             logging.info(
@@ -577,8 +529,6 @@ def prepare_dataset(dataset_dir):
                     _el["image_path"] = new_img_path
                     break
 
-
-    # DEBUG
     for split in datasets:
         logging.info(f"[PREPARE DATASET] {split} size = {len(datasets[split])}")
 
@@ -595,6 +545,7 @@ def load_image(image_path: str, target_size: int = 1024, max_pixel_count: int = 
         target_size *= 2.0
     
     if sample_img_size:
+        # Preserve the historical RNG draw even though image-size jitter is disabled.
         extra_dim = random.randint(0, 500)
         extra_dim = 0
         target_size += extra_dim
@@ -667,7 +618,6 @@ def custom_collator(batch, processor, collator_args: Dict[str, Any], sample_img_
         images=image_inputs,
         videos=video_inputs,
         padding="longest",
-        # return_tensors="pt",
         max_length=collator_args["max_length"],
         truncation=collator_args["truncation"],
     )
@@ -706,7 +656,6 @@ def get_validation_loss(model, validation_loader, device):
 def clean_mid_checkpoints(checkpoint_dir: str, keep_n: int = 2) -> None:
     """Remove older training state files and their corresponding PEFT adapter dirs."""
     state_paths = glob.glob(f"{checkpoint_dir}/chkp_*.pt")
-    # Extract step numbers
     def extract_step(p: str) -> int:
         try:
             return int(p.split("_")[-1].replace(".pt", ""))
@@ -717,13 +666,11 @@ def clean_mid_checkpoints(checkpoint_dir: str, keep_n: int = 2) -> None:
     tbd = state_paths[keep_n:]
     for path in tbd:
         step = path.split("_")[-1].replace(".pt", "")
-        # Remove state file
         try:
             os.remove(path)
             logging.info(f"[WARNING] Checkpoint clean executed! Deleted old checkpoint state: {path}")
         except FileNotFoundError:
             pass
-        # Remove corresponding PEFT adapter dir if present
         peft_dir = os.path.join(checkpoint_dir, f"peft_chkp_{step}")
         if os.path.isdir(peft_dir):
             shutil.rmtree(peft_dir, ignore_errors=True)
@@ -750,8 +697,6 @@ def main():
     NUM_SAVE_STEPS = args.num_save_steps
     model_class, model_family = get_model_class_and_family(BASE_MODEL_NAME)
 
-    # ---- logger ----
-
     setup_logger(args.log_file)
 
     logging.info("[SETTINGS]")
@@ -775,7 +720,6 @@ def main():
 
     os.makedirs(CHECKPOINT_DIR, exist_ok=True)
     
-    # Create metrics log file
     metrics_log_path = os.path.join(OUTPUT_DIR, "training_metrics.jsonl")
     logging.info(f"Metrics will be logged to        ->      {metrics_log_path}")
 
@@ -790,13 +734,9 @@ def main():
         train_dataset.extend(train_val_datasets.get("train", []))
         validation_dataset.extend(train_val_datasets.get("val", []))
         
-        #DEBUG
         logging.info(f"[MAIN] Accumulated train size: {len(train_dataset)}")
         logging.info(f"[MAIN] Accumulated val size: {len(validation_dataset)}")
 
-
-    # ---- Loading Processor ----
-    # used for validation loader and other stuff
 
     processor = AutoProcessor.from_pretrained(BASE_MODEL_NAME)
 
@@ -820,7 +760,6 @@ def main():
         "model_family": model_family,
     }
     
-    # --- DEBUG for dataset loading ----
     if len(train_dataset) == 0:
         raise RuntimeError(
             "❌ Train dataset is EMPTY after preprocessing.\n"
@@ -829,9 +768,6 @@ def main():
     if len(validation_dataset) == 0:
         logging.warning("⚠️ Validation dataset is EMPTY.")
         
-    # --- / DEBUG for dataset loading ----
-
-
     # --- Validation loader ---
 
     val_dataloader = DataLoader(
@@ -843,8 +779,6 @@ def main():
         generator=g,
     )
     
-    # --- / Validation loader ---
-
     # ---- Model Set Up ----
 
     logging.info("************************ START OF RUN ************************")
@@ -862,13 +796,11 @@ def main():
     base_model.gradient_checkpointing_enable()
     logging.info("Model loaded correctly.")
 
-    # Freeze all base model layers
     for _, param in base_model.named_parameters():
         param.requires_grad = False
 
     # ---- LoRA ----
 
-    # Prepare LoRA config upfront
     lora_config = None
     
     if args.use_peft:
@@ -889,7 +821,6 @@ def main():
                 logging.info(f"Found PEFT checkpoint at step {peft_global_step}: {peft_checkpoint_dir}")
         
         if peft_checkpoint_dir is not None:
-            # 🔥 RESUME CORRETTO
             model = PeftModel.from_pretrained(
                 base_model,
                 peft_checkpoint_dir,
@@ -897,7 +828,6 @@ def main():
             )
             logging.info(f"Loaded LoRA adapters from checkpoint {peft_checkpoint_dir}.")
         else:
-            # 🆕 TRAIN DA ZERO
             lora_config = LoraConfig(
                 r=args.lora_r,
                 lora_alpha=args.lora_alpha,
@@ -921,12 +851,10 @@ def main():
         lr=LEARNING_RATE
     )
 
-    # Calcolo numero step totali ORIGINALI
-    # num_training_steps = int(len(train_dataloader) * EPOCHS / GRADIENT_ACCUMULATION_STEPS) # OLD
+    # Match the original full-dataset schedule even when resuming from a subset.
     total_batches_full = int(len(train_dataset) / BATCH_SIZE)
     total_optimizer_steps_full = int(total_batches_full * EPOCHS / GRADIENT_ACCUMULATION_STEPS)
 
-    # scheduler = get_cosine_schedule_with_warmup(optimizer, num_warmup_steps=NUM_WARMUP_STEPS, num_training_steps=num_training_steps) # OLD
     scheduler = get_cosine_schedule_with_warmup(
         optimizer,
         num_warmup_steps=NUM_WARMUP_STEPS,
@@ -963,22 +891,16 @@ def main():
             f"lr={optimizer.param_groups[0]['lr']}"
         )
 
-    # ---- new data loader for train ----
-
-    # ------------------------------
-    # Resume-aware DataLoader
-    # ------------------------------
+    # Reconstruct the first epoch's shuffle and skip batches already processed.
 
     if args.restore_checkpoint and global_step > 0:
 
         logging.info(f"Resuming from global_step={global_step}")
 
-        # Ricrea lo stesso shuffle deterministico
-        rng = torch.Generator() # restart the shufller
+        rng = torch.Generator()
         rng.manual_seed(DATALOADER_SEED)
         shuffled_indices = torch.randperm(len(train_dataset), generator=rng).tolist()
 
-        # Calcola quanti sample sono già stati consumati
         samples_already_seen = global_step * BATCH_SIZE
 
         logging.info(f"Skipping {samples_already_seen} samples already processed.")
@@ -990,7 +912,7 @@ def main():
         train_dataloader = DataLoader(
             train_subset,
             batch_size=BATCH_SIZE,
-            shuffle=False,  # IMPORTANTISSIMO
+            shuffle=False,
             num_workers=0,
             collate_fn=partial(
                 custom_collator,
@@ -1017,10 +939,6 @@ def main():
         )
 
     
-    # ---- / new data loader for train ----
-    
-
-    # --- Params printing ---
     trainable_params = 0
     total_params = 0
     for _, param in model.named_parameters():
@@ -1031,9 +949,6 @@ def main():
     logging.info(f"Total parameters: {total_params}")
     logging.info(f"Trainable parameters: {trainable_params}")
     logging.info(f"Percentage trainable: {round(percent, 3)}")
-    # --- / Params printing ---
-
-
     # ---- training loop ----
 
     model.train()
@@ -1046,14 +961,12 @@ def main():
         
         batch = {k: v.to(computation_device) for k, v in batch.items()}
 
-        with autocast(device_type="cuda", dtype=torch.bfloat16): # adding autocast before calculating output and loss FOR SCALER
+        with autocast(device_type="cuda", dtype=torch.bfloat16):
             outputs = model(**batch, output_hidden_states=False)
             loss = outputs.loss
             logging.info(f"[TRAIN] Train loss {loss}")
 
-        # accumulate for logging only
-        ga_loss += loss.item() / BATCH_SIZE # DA RIVEDERE
-        # scale loss for gradient accumulation and backprop every step
+        ga_loss += loss.item() / BATCH_SIZE
         (loss / GRADIENT_ACCUMULATION_STEPS).backward()
         global_step += 1
 
