@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>DocAttriBench: Benchmarking Answer Grounding in Document Visual Question Answering</title>
+  <link rel="icon" type="image/png" sizes="384x384" href="images/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cambo&family=Source+Sans+3:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -34,7 +35,7 @@
       font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
         linear-gradient(180deg, rgba(199, 237, 214, 0.52), rgba(247, 251, 248, 0) 360px),
-        var(--page);
+        #ffffff;
       color: var(--ink);
       overflow-x: hidden;
     }
@@ -240,15 +241,15 @@
       max-width: none;
       margin-left: calc(50% - 50vw);
       padding: 48px max(18px, calc((100vw - 1040px) / 2 + 18px));
-      background:
-        linear-gradient(180deg, rgba(236, 248, 241, 0.78), rgba(248, 252, 249, 0.86));
+      background: #f0f8f3;
+      box-shadow:
+        inset 0 1px rgba(47, 143, 91, 0.07),
+        inset 0 -1px rgba(47, 143, 91, 0.07);
     }
 
     .results-band {
       display: grid;
       gap: 34px;
-      background:
-        linear-gradient(180deg, rgba(232, 246, 238, 0.82), rgba(246, 251, 248, 0.92));
     }
 
     .results-band .feature {
@@ -257,8 +258,6 @@
 
     .abstract-section {
       margin-top: 2px;
-      background:
-        linear-gradient(180deg, rgba(242, 250, 245, 0.94), rgba(255, 255, 255, 0.9));
     }
 
     .abstract-section h2,
