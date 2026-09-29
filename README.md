@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://arxiv.org/abs/2609.20574">
-    <img src="https://img.shields.io/badge/Paper-arxiv.2508.20181-B31B1B.svg" alt="Paper">
+    <img src="https://img.shields.io/badge/Paper-arxiv.2609.20574-B31B1B.svg" alt="Paper">
   </a>
   <a href="https://aimagelab.github.io/DocAttriBench/">
     <img src="https://img.shields.io/badge/🌐-Project%20Page-blue.svg" alt="Project Page">
@@ -159,15 +159,62 @@ models/
 
 All subsequent inference and evaluation steps assume that the required MAPPET models are available under the repository's `/models` directory.
 
-### 3.3 Other Models for inferences
+### 3.3 Additional Models for Benchmarking and Processing
 
+In addition to the released MAPPET models described in the previous section, the pipeline relies on a set of external vision-language models for benchmark reproduction, optional fine-tuning, ground-truth generation, and answer-concept processing.
 
+Unless otherwise specified, these models should be downloaded from Hugging Face and stored under the repository's `/models` directory.
 
+#### Benchmark Inference and Optional Fine-Tuning
 
+The following models are used to reproduce the benchmark results reported in the paper. They can also be used as starting checkpoints for the optional fine-tuning stage.
 
+| Model | Hugging Face |
+|---|---|
+| `Qwen2.5-VL-3B-Instruct` | [Qwen/Qwen2.5-VL-3B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct) |
+| `Qwen2.5-VL-7B-Instruct` | [Qwen/Qwen2.5-VL-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct) |
+| `Qwen2.5-VL-32B-Instruct` | [Qwen/Qwen2.5-VL-32B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-32B-Instruct) |
+| `Qwen3-VL-2B-Instruct` | [Qwen/Qwen3-VL-2B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct) |
+| `Qwen3-VL-8B-Instruct` | [Qwen/Qwen3-VL-8B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct) |
+| `Qwen3-VL-32B-Instruct` | [Qwen/Qwen3-VL-32B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-32B-Instruct) |
+| `InternVL2.5-2B` | [OpenGVLab/InternVL2_5-2B](https://huggingface.co/OpenGVLab/InternVL2_5-2B) |
+| `InternVL2.5-8B` | [OpenGVLab/InternVL2_5-8B](https://huggingface.co/OpenGVLab/InternVL2_5-8B) |
+| `InternVL2.5-38B` | [OpenGVLab/InternVL2_5-38B](https://huggingface.co/OpenGVLab/InternVL2_5-38B) |
+| `InternVL3-2B-Instruct` | [OpenGVLab/InternVL3-2B-Instruct](https://huggingface.co/OpenGVLab/InternVL3-2B-Instruct) |
+| `InternVL3-8B-Instruct` | [OpenGVLab/InternVL3-8B-Instruct](https://huggingface.co/OpenGVLab/InternVL3-8B-Instruct) |
+| `InternVL3-38B-Instruct` | [OpenGVLab/InternVL3-38B-Instruct](https://huggingface.co/OpenGVLab/InternVL3-38B-Instruct) |
+| `visa-7B-single-fulldata` | [MrLight/visa-7B-single-fulldata](https://huggingface.co/MrLight/visa-7B-single-fulldata) |
 
+> **Note:** `MrLight/visa-7B-single-fulldata` is distributed as a PEFT/LoRA adapter and requires the corresponding base model, [`Qwen/Qwen2-VL-7B-Instruct`](https://huggingface.co/Qwen/Qwen2-VL-7B-Instruct), to be downloaded before merging. When VISA is included in the benchmark, make sure the base model is available under `/models`, then use the dedicated VISA model-merging job described in the model-merging section.
 
+#### Ground-Truth Generation
 
+Ground-truth answer-concept extraction uses the AWQ-quantized 72B Qwen2.5-VL model:
+
+| Purpose | Model | Hugging Face |
+|---|---|---|
+| Ground-truth answer-concept generation | `Qwen2.5-VL-72B-Instruct-AWQ` | [Qwen/Qwen2.5-VL-72B-Instruct-AWQ](https://huggingface.co/Qwen/Qwen2.5-VL-72B-Instruct-AWQ) |
+
+This model is used by the ground-truth processing stage described in **Section 3.7**.
+
+#### Answer-Concept Processing
+
+Predicted answers generated during inference are processed with the AWQ-quantized 32B Qwen2.5-VL model:
+
+| Purpose | Model | Hugging Face |
+|---|---|---|
+| Predicted answer-concept extraction | `Qwen2.5-VL-32B-Instruct-AWQ` | [Qwen/Qwen2.5-VL-32B-Instruct-AWQ](https://huggingface.co/Qwen/Qwen2.5-VL-32B-Instruct-AWQ) |
+
+This model is used by the answer-concept processing stage described in **Section 3.8**.
+
+Models can be downloaded with the Hugging Face CLI. For example:
+
+```bash
+huggingface-cli download Qwen/Qwen2.5-VL-3B-Instruct \
+    --local-dir models/Qwen2.5-VL-3B-Instruct
+```
+
+Use the corresponding Hugging Face repository identifier and target directory for each additional model required by the workflow.
 
 ### 3.4 Model Fine-Tuning
 
@@ -307,7 +354,63 @@ sbatch jobs/inference/boxFromAnswer_inference.sh
 
 Because these wrappers are implemented as SLURM job arrays, a single submission covers all three MAPPET models using the task-specific configuration defined in the corresponding job file.
 
-The generated inference outputs are used by the subsequent processing and evaluation stages of the pipeline.
+#### Reproducing Benchmark Scores with Additional Models
+
+For reproducibility purposes, additional SLURM job arrays are provided to run the same three inference tasks on the baseline models used for benchmark score reproduction.
+
+These wrappers are available under:
+
+```text
+jobs/inference/other_models/
+```
+
+The available jobs are:
+
+| Wrapper | Task |
+|---|---|
+| `jobs/inference/other_models/answerBox_inference.sh` | `answerBox` |
+| `jobs/inference/other_models/box_inference.sh` | `box` |
+| `jobs/inference/other_models/boxFromAnswer_inference.sh` | `boxFromAnswer` |
+
+Each wrapper launches `scripts/inference/answer_inference.py` as a SLURM job array over the following models:
+
+- `MrLight/visa-7B-single-fulldata-merged`
+- `OpenGVLab/InternVL2_5-2B`
+- `OpenGVLab/InternVL2_5-8B`
+- `OpenGVLab/InternVL2_5-38B`
+- `OpenGVLab/InternVL3-2B-Instruct`
+- `OpenGVLab/InternVL3-8B-Instruct`
+- `OpenGVLab/InternVL3-38B-Instruct`
+- `Qwen/Qwen2.5-VL-3B-Instruct`
+- `Qwen/Qwen2.5-VL-7B-Instruct`
+- `Qwen/Qwen2.5-VL-32B-Instruct`
+- `Qwen/Qwen3-VL-2B-Instruct`
+- `Qwen/Qwen3-VL-8B-Instruct`
+- `Qwen/Qwen3-VL-32B-Instruct`
+
+For example, to reproduce `answerBox` predictions across all benchmark models, run:
+
+```bash
+sbatch jobs/inference/other_models/answerBox_inference.sh
+```
+
+Similarly, use:
+
+```bash
+sbatch jobs/inference/other_models/box_inference.sh
+```
+
+for `box` inference, or:
+
+```bash
+sbatch jobs/inference/other_models/boxFromAnswer_inference.sh
+```
+
+for `boxFromAnswer` inference.
+
+The VISA entry refers to the already merged model, `MrLight/visa-7B-single-fulldata-merged`, which should be prepared beforehand using the dedicated model-merging step.
+
+The generated inference outputs are used by the subsequent answer-processing and evaluation stages of the pipeline.
 
 ### 3.7 Ground-Truth Generation
 
