@@ -33,6 +33,23 @@ Answer grounding in document visual question answering remains an open challenge
 
 ## Table of Contents
 
+- [1. Environment Setup](#1-environment-setup)
+- [2. Conda Environment Installation](#2-conda-environment-installation)
+- [3. Pipeline](#3-pipeline)
+  - [3.1 Dataset Download](#31-dataset-download)
+  - [3.2 Project Models Download](#32-project-models-download)
+  - [3.3 Additional Models for Benchmarking and Processing](#33-additional-models-for-benchmarking-and-processing)
+    - [Benchmark Inference and Optional Fine-Tuning](#benchmark-inference-and-optional-fine-tuning)
+    - [Ground-Truth Generation](#ground-truth-generation)
+    - [Answer-Concept Processing](#answer-concept-processing)
+  - [3.4 Model Fine-Tuning](#34-model-fine-tuning)
+  - [3.5 Model Merging](#35-model-merging)
+  - [3.6 Inference](#36-inference)
+    - [Reproducing Benchmark Scores with Additional Models](#reproducing-benchmark-scores-with-additional-models)
+  - [3.7 Ground-Truth Generation](#37-ground-truth-generation)
+  - [3.8 Answer Concepts Generation](#38-answer-concepts-generation)
+  - [3.9 Final Metrics](#39-final-metrics)
+
 # Enviroment Setup and Execution Pipeline
 
 ## 1. Environment Setup
