@@ -20,7 +20,7 @@ This repository contains the reference code for the paper [DocAttriBench: Benchm
 
 - **[2026/08/17]** Repo work in progress!
 - **[2026/08/22]** Dataset available in the Hugging Face collection!
-- **[2026/08/24]** Models available in the Hugging Face collection!
+- **[2026/09/24]** Models available in the Hugging Face collection!
 
 ## Citation
 
