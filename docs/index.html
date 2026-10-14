@@ -267,6 +267,73 @@
       margin-left: auto;
     }
 
+    .bibtex-section {
+      margin-top: 2px;
+      background: #18261f;
+      color: #edf7f1;
+      box-shadow: none;
+    }
+
+    .bibtex-inner {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .bibtex-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .bibtex-section h2 {
+      margin: 0;
+      color: var(--accent-soft);
+    }
+
+    .bibtex-copy-button {
+      flex: 0 0 auto;
+      min-width: 120px;
+      min-height: 42px;
+      padding: 0 16px;
+      border: 1px solid rgba(199, 237, 214, 0.42);
+      border-radius: 6px;
+      background: transparent;
+      color: #ffffff;
+      font: inherit;
+      font-size: 0.94rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+
+    .bibtex-copy-button:hover,
+    .bibtex-copy-button.is-copied {
+      border-color: var(--accent-soft);
+      background: var(--accent-soft);
+      color: #18261f;
+    }
+
+    .bibtex-copy-button:focus-visible {
+      outline: 3px solid rgba(199, 237, 214, 0.45);
+      outline-offset: 3px;
+    }
+
+    .bibtex-code {
+      margin: 20px 0 0;
+      padding: 20px 22px;
+      overflow-x: auto;
+      border: 1px solid rgba(199, 237, 214, 0.2);
+      border-radius: 6px;
+      background: rgba(5, 13, 9, 0.34);
+      color: #f4faf6;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      text-align: left;
+      white-space: pre;
+    }
+
     .feature-copy {
       max-width: 800px;
       margin: 0 auto;
@@ -669,6 +736,21 @@
     </header>
 
     <div class="content">
+      <section class="bibtex-section section-band" aria-labelledby="bibtex-title">
+        <div class="bibtex-inner">
+          <div class="bibtex-heading">
+            <h2 id="bibtex-title">BibTeX</h2>
+            <button class="bibtex-copy-button" type="button" data-copy-bibtex aria-live="polite">Copy BibTeX</button>
+          </div>
+          <pre class="bibtex-code"><code id="bibtex-entry">@inproceedings{degrandis2026docattribench,
+  title={{DocAttriBench: Benchmarking Answer Grounding in Document Visual Question Answering}},
+  author={De Grandis, Luca and Cappelletti, Silvia and Raccagni, William and Cornia, Marcella and Baraldi, Lorenzo and Cucchiara, Rita},
+  booktitle={Proceedings of the British Machine Vision Conference},
+  year={2026}
+}</code></pre>
+        </div>
+      </section>
+
       <div class="story">
         <section class="feature" aria-labelledby="vag-title">
           <div class="feature-copy">
@@ -1016,5 +1098,42 @@
     <img src="images/qualitatives/mmlongbenchdoc_3.png" alt="Enlarged MMLongBench-DOC qualitative example 3.">
     <span class="lightbox-close" aria-hidden="true">&times;</span>
   </a>
+
+  <script>
+    const copyBibtexButton = document.querySelector('[data-copy-bibtex]');
+    const bibtexEntry = document.getElementById('bibtex-entry');
+
+    copyBibtexButton.addEventListener('click', async () => {
+      const bibtex = bibtexEntry.textContent;
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(bibtex);
+        } else {
+          const textArea = document.createElement('textarea');
+          textArea.value = bibtex;
+          textArea.style.position = 'fixed';
+          textArea.style.opacity = '0';
+          document.body.appendChild(textArea);
+          textArea.select();
+          const copied = document.execCommand('copy');
+          textArea.remove();
+          if (!copied) throw new Error('Copy command failed');
+        }
+
+        copyBibtexButton.textContent = 'Copied';
+        copyBibtexButton.classList.add('is-copied');
+        window.setTimeout(() => {
+          copyBibtexButton.textContent = 'Copy BibTeX';
+          copyBibtexButton.classList.remove('is-copied');
+        }, 1800);
+      } catch (error) {
+        copyBibtexButton.textContent = 'Copy failed';
+        window.setTimeout(() => {
+          copyBibtexButton.textContent = 'Copy BibTeX';
+        }, 1800);
+      }
+    });
+  </script>
 </body>
 </html>
