@@ -17,8 +17,9 @@
 This repository contains the reference code for the paper [DocAttriBench: Benchmarking Answer Grounding in Document Visual Question Answering](https://arxiv.org/abs/2609.20574), **BMVC 2026**.
 
 ## 📢 Latest Updates
-  - **[2026/08/17]** Repo work in progress!
-  - **[2026/08/22]** Dataset available in the Hugging Face collection!
+
+- **[2026/08/17]** Repo work in progress!
+- **[2026/08/22]** Dataset available in the Hugging Face collection!
 
 ## Citation
 
@@ -29,6 +30,7 @@ If you use this code, please cite our BMVC 2026 paper:
 ```
 
 ## Overview
+
 Answer grounding in document visual question answering remains an open challenge: most benchmarks lack grounding annotations or provide limited-quality labels, while constructing grounded datasets still requires costly manual effort. We introduce DocAttriBench (DAB), a large-scale benchmark for fine-grained, element-level source attribution in Document VQA, grounding answers to specific layout elements such as text blocks, tables, and images. To build DAB, we propose a Mask-based Perplexity-Derived Attribution method (MAPPET) that combines document layout and language modeling to identify the most informative element for each answer. MAPPET measures the increase in perplexity after masking candidate elements and attributes the answer to the element contributing most to model confidence. Applying MAPPET to multiple existing Document VQA datasets yields DAB, with 237k documents and 296k question-answer pairs with element-level grounding. We benchmark grounding-capable multimodal LLMs on DAB, evaluating answer accuracy, attribution accuracy, and overall answer quality. Results show that while larger models generally achieve higher answer accuracy, even the strongest models often fail to localize the supporting elements. DAB provides a scalable benchmark for developing grounded, verifiable, and trustworthy Document VQA models. Dataset and code are available at https://aimagelab.github.io/DocAttriBench/.
 
 ## Table of Contents
@@ -57,20 +59,20 @@ Answer grounding in document visual question answering remains an open challenge
 
 The code of this repository was tested using these software versions:
 
-| Component | Version |
-| --- | --- |
-| Python | **3.10.19** |
-| CUDA runtime packages | **12.8** (`nvidia-cuda-runtime-cu12==12.8.90`) | 
-| vLLM | **0.11.0** |
-| PyTorch | **2.8.0** |
-| Transformers / PEFT | **4.57.0 / 0.17.1** |
-| FlashAttention | **2.8.3** |
+| Component             | Version                                                |
+| --------------------- | ------------------------------------------------------ |
+| Python                | **3.10.19**                                      |
+| CUDA runtime packages | **12.8** (`nvidia-cuda-runtime-cu12==12.8.90`) |
+| vLLM                  | **0.11.0**                                       |
+| PyTorch               | **2.8.0**                                        |
+| Transformers / PEFT   | **4.57.0 / 0.17.1**                              |
+| FlashAttention        | **2.8.3**                                        |
 
 All runs were launched in a test environment that complies with the software versions listed in the table. To ensure reproducibility, you can install the **`dab`** environments by following the instructions in the section below.
 
 ## 2. Conda Environment Installation
 
-In order to properly replicate the production environment used by the code, you can run a dedicated sh script to create the **`dab`** environment. The steps are as follows: 
+In order to properly replicate the production environment used by the code, you can run a dedicated sh script to create the **`dab`** environment. The steps are as follows:
 
 ```bash
 cd DocAttriBench/
@@ -188,21 +190,21 @@ Unless otherwise specified, these models should be downloaded from Hugging Face 
 
 The following models are used to reproduce the benchmark results reported in the paper. They can also be used as starting checkpoints for the optional fine-tuning stage.
 
-| Model | Hugging Face |
-|---|---|
-| `Qwen2.5-VL-3B-Instruct` | [Qwen/Qwen2.5-VL-3B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct) |
-| `Qwen2.5-VL-7B-Instruct` | [Qwen/Qwen2.5-VL-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct) |
-| `Qwen2.5-VL-32B-Instruct` | [Qwen/Qwen2.5-VL-32B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-32B-Instruct) |
-| `Qwen3-VL-2B-Instruct` | [Qwen/Qwen3-VL-2B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct) |
-| `Qwen3-VL-8B-Instruct` | [Qwen/Qwen3-VL-8B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct) |
-| `Qwen3-VL-32B-Instruct` | [Qwen/Qwen3-VL-32B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-32B-Instruct) |
-| `InternVL2.5-2B` | [OpenGVLab/InternVL2_5-2B](https://huggingface.co/OpenGVLab/InternVL2_5-2B) |
-| `InternVL2.5-8B` | [OpenGVLab/InternVL2_5-8B](https://huggingface.co/OpenGVLab/InternVL2_5-8B) |
-| `InternVL2.5-38B` | [OpenGVLab/InternVL2_5-38B](https://huggingface.co/OpenGVLab/InternVL2_5-38B) |
-| `InternVL3-2B-Instruct` | [OpenGVLab/InternVL3-2B-Instruct](https://huggingface.co/OpenGVLab/InternVL3-2B-Instruct) |
-| `InternVL3-8B-Instruct` | [OpenGVLab/InternVL3-8B-Instruct](https://huggingface.co/OpenGVLab/InternVL3-8B-Instruct) |
-| `InternVL3-38B-Instruct` | [OpenGVLab/InternVL3-38B-Instruct](https://huggingface.co/OpenGVLab/InternVL3-38B-Instruct) |
-| `visa-7B-single-fulldata` | [MrLight/visa-7B-single-fulldata](https://huggingface.co/MrLight/visa-7B-single-fulldata) |
+| Model                       | Hugging Face                                                                               |
+| --------------------------- | ------------------------------------------------------------------------------------------ |
+| `Qwen2.5-VL-3B-Instruct`  | [Qwen/Qwen2.5-VL-3B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct)           |
+| `Qwen2.5-VL-7B-Instruct`  | [Qwen/Qwen2.5-VL-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct)           |
+| `Qwen2.5-VL-32B-Instruct` | [Qwen/Qwen2.5-VL-32B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-32B-Instruct)         |
+| `Qwen3-VL-2B-Instruct`    | [Qwen/Qwen3-VL-2B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct)               |
+| `Qwen3-VL-8B-Instruct`    | [Qwen/Qwen3-VL-8B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct)               |
+| `Qwen3-VL-32B-Instruct`   | [Qwen/Qwen3-VL-32B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-32B-Instruct)             |
+| `InternVL2.5-2B`          | [OpenGVLab/InternVL2_5-2B](https://huggingface.co/OpenGVLab/InternVL2_5-2B)                 |
+| `InternVL2.5-8B`          | [OpenGVLab/InternVL2_5-8B](https://huggingface.co/OpenGVLab/InternVL2_5-8B)                 |
+| `InternVL2.5-38B`         | [OpenGVLab/InternVL2_5-38B](https://huggingface.co/OpenGVLab/InternVL2_5-38B)               |
+| `InternVL3-2B-Instruct`   | [OpenGVLab/InternVL3-2B-Instruct](https://huggingface.co/OpenGVLab/InternVL3-2B-Instruct)   |
+| `InternVL3-8B-Instruct`   | [OpenGVLab/InternVL3-8B-Instruct](https://huggingface.co/OpenGVLab/InternVL3-8B-Instruct)   |
+| `InternVL3-38B-Instruct`  | [OpenGVLab/InternVL3-38B-Instruct](https://huggingface.co/OpenGVLab/InternVL3-38B-Instruct) |
+| `visa-7B-single-fulldata` | [MrLight/visa-7B-single-fulldata](https://huggingface.co/MrLight/visa-7B-single-fulldata)   |
 
 > **Note:** `MrLight/visa-7B-single-fulldata` is distributed as a PEFT/LoRA adapter and requires the corresponding base model, [`Qwen/Qwen2-VL-7B-Instruct`](https://huggingface.co/Qwen/Qwen2-VL-7B-Instruct), to be downloaded before merging. When VISA is included in the benchmark, make sure the base model is available under `/models`, then use the dedicated VISA model-merging job described in the model-merging section.
 
@@ -210,8 +212,8 @@ The following models are used to reproduce the benchmark results reported in the
 
 Ground-truth answer-concept extraction uses the AWQ-quantized 72B Qwen2.5-VL model:
 
-| Purpose | Model | Hugging Face |
-|---|---|---|
+| Purpose                                | Model                           | Hugging Face                                                                               |
+| -------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------ |
 | Ground-truth answer-concept generation | `Qwen2.5-VL-72B-Instruct-AWQ` | [Qwen/Qwen2.5-VL-72B-Instruct-AWQ](https://huggingface.co/Qwen/Qwen2.5-VL-72B-Instruct-AWQ) |
 
 This model is used by the ground-truth processing stage described in **Section 3.7**.
@@ -220,8 +222,8 @@ This model is used by the ground-truth processing stage described in **Section 3
 
 Predicted answers generated during inference are processed with the AWQ-quantized 32B Qwen2.5-VL model:
 
-| Purpose | Model | Hugging Face |
-|---|---|---|
+| Purpose                             | Model                           | Hugging Face                                                                               |
+| ----------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------ |
 | Predicted answer-concept extraction | `Qwen2.5-VL-32B-Instruct-AWQ` | [Qwen/Qwen2.5-VL-32B-Instruct-AWQ](https://huggingface.co/Qwen/Qwen2.5-VL-32B-Instruct-AWQ) |
 
 This model is used by the answer-concept processing stage described in **Section 3.8**.
@@ -241,10 +243,10 @@ The models can be fine-tuned on **DocAttriBench** using **LoRA**. The fine-tunin
 
 Two fine-tuning scripts are used depending on the model family. Both Qwen models share the same implementation, whereas InternVL uses a dedicated script:
 
-| Model | Fine-tuning script | SLURM job |
-|---|---|---|
-| `Qwen/Qwen2.5-VL-7B-Instruct` | `scripts/finetuning/finetuning_qwen.py` | `jobs/finetuning/qwen25_finetuning.sh` |
-| `Qwen/Qwen3-VL-8B-Instruct` | `scripts/finetuning/finetuning_qwen.py` | `jobs/finetuning/qwen3_finetuning.sh` |
+| Model                                 | Fine-tuning script                            | SLURM job                                    |
+| ------------------------------------- | --------------------------------------------- | -------------------------------------------- |
+| `Qwen/Qwen2.5-VL-7B-Instruct`       | `scripts/finetuning/finetuning_qwen.py`     | `jobs/finetuning/qwen25_finetuning.sh`     |
+| `Qwen/Qwen3-VL-8B-Instruct`         | `scripts/finetuning/finetuning_qwen.py`     | `jobs/finetuning/qwen3_finetuning.sh`      |
 | `OpenGVLab/InternVL3_5-8B-Instruct` | `scripts/finetuning/finetuning_internvl.py` | `jobs/finetuning/internvl35_finetuning.sh` |
 
 Each SLURM script is configured to launch the corresponding fine-tuning procedure with the appropriate model-specific settings.
@@ -260,6 +262,7 @@ Similarly, use:
 ```bash
 sbatch jobs/finetuning/qwen3_finetuning.sh
 ```
+
 for `Qwen/Qwen3-VL-8B-Instruct`, or:
 
 ```bash
@@ -288,12 +291,12 @@ jobs/model_merge/
 
 The available merging jobs are:
 
-| Model | SLURM job |
-|---|---|
-| MAPPET based on Qwen3-VL | `jobs/model_merge/mappet3_model_merge.sh` |
-| MAPPET based on Qwen2.5-VL | `jobs/model_merge/mappet25_model_merge.sh` |
-| MAPPET based on InternVL | `jobs/model_merge/mappetintern_model_merge.sh` |
-| VISA | `jobs/model_merge/VISA_model_merge.sh` |
+| Model                      | SLURM job                                        |
+| -------------------------- | ------------------------------------------------ |
+| MAPPET based on Qwen3-VL   | `jobs/model_merge/mappet3_model_merge.sh`      |
+| MAPPET based on Qwen2.5-VL | `jobs/model_merge/mappet25_model_merge.sh`     |
+| MAPPET based on InternVL   | `jobs/model_merge/mappetintern_model_merge.sh` |
+| VISA                       | `jobs/model_merge/VISA_model_merge.sh`         |
 
 Each SLURM job invokes `scripts/model_merge/model_merge.py` with the appropriate base model, LoRA adapter, and output configuration.
 
@@ -325,10 +328,10 @@ scripts/inference/answer_inference.py
 
 This script supports the three inference tasks used in the evaluation pipeline:
 
-| Task | Description |
-|---|---|
-| `answerBox` | Generate an answer together with the supporting bounding boxes. |
-| `box` | Localize the visual evidence using only the question and the input image. |
+| Task              | Description                                                                                         |
+| ----------------- | --------------------------------------------------------------------------------------------------- |
+| `answerBox`     | Generate an answer together with the supporting bounding boxes.                                     |
+| `box`           | Localize the visual evidence using only the question and the input image.                           |
 | `boxFromAnswer` | Localize the visual evidence using the question, the input image, and the dataset reference answer. |
 
 The corresponding SLURM job arrays are available under:
@@ -345,11 +348,11 @@ Each job array runs the selected inference task across all three released MAPPET
 
 The available wrappers are:
 
-| Wrapper | Task | Requested behavior |
-|---|---|---|
-| `jobs/inference/answerBox_inference.sh` | `answerBox` (default) | Generate an answer with supporting boxes |
-| `jobs/inference/box_inference.sh` | `box` | Locate evidence from the question and image |
-| `jobs/inference/boxFromAnswer_inference.sh` | `boxFromAnswer` | Locate evidence given the question, image, and dataset reference answer |
+| Wrapper                                       | Task                    | Requested behavior                                                      |
+| --------------------------------------------- | ----------------------- | ----------------------------------------------------------------------- |
+| `jobs/inference/answerBox_inference.sh`     | `answerBox` (default) | Generate an answer with supporting boxes                                |
+| `jobs/inference/box_inference.sh`           | `box`                 | Locate evidence from the question and image                             |
+| `jobs/inference/boxFromAnswer_inference.sh` | `boxFromAnswer`       | Locate evidence given the question, image, and dataset reference answer |
 
 To launch inference, submit the wrapper corresponding to the desired task from the repository root.
 
@@ -385,10 +388,10 @@ jobs/inference/other_models/
 
 The available jobs are:
 
-| Wrapper | Task |
-|---|---|
-| `jobs/inference/other_models/answerBox_inference.sh` | `answerBox` |
-| `jobs/inference/other_models/box_inference.sh` | `box` |
+| Wrapper                                                    | Task              |
+| ---------------------------------------------------------- | ----------------- |
+| `jobs/inference/other_models/answerBox_inference.sh`     | `answerBox`     |
+| `jobs/inference/other_models/box_inference.sh`           | `box`           |
 | `jobs/inference/other_models/boxFromAnswer_inference.sh` | `boxFromAnswer` |
 
 Each wrapper launches `scripts/inference/answer_inference.py` as a SLURM job array over the following models:
@@ -471,9 +474,6 @@ sbatch jobs/ground_truth/gt_answer_processing.sh
 
 This stage is independent of model inference and can be executed before, after, or separately from the inference pipeline.
 
-
-
-
 ### 3.8 Answer Concepts Generation
 
 This stage processes the model outputs produced by the `answerBox` inference task and extracts the answer concepts required by the evaluation pipeline.
@@ -520,7 +520,6 @@ sbatch jobs/processing/answer_processing.sh
 
 The generated concept-extraction files are used by the subsequent evaluation steps to compare predicted answer concepts against the processed ground-truth concepts.
 
-
 ### 3.9 Final Metrics Computation
 
 This stage performs the final evaluation of the model predictions using the outputs generated by the answer-concept processing stage described in **Section 3.8**.
@@ -553,4 +552,24 @@ The resulting metrics provide the final evaluation results for the processed mod
 
 ### 3.10 Compute Tables
 
-> **Work in progress:** scripts for computing the final evaluation metrics will be added in a future version.
+This stage reconstructs the tables reported in the main paper and supplementary material using the metric files generated in **Section 3.9**.
+
+Before running this step, ensure that the final metrics are available under:
+
+```text
+output/metrics/answers
+output/metrics/iou
+```
+
+The table computation is provided through two notebooks:
+
+```text
+scripts/metrics/main_tables_5_6.ipynb
+scripts/metrics/supplementary_tables_s3_s5.ipynb
+```
+
+The first notebook reconstructs **Table 5**, which evaluates grounded answer generation by measuring answer correctness and evidence localization jointly, and **Table 6**, which evaluates answer locating and post-hoc attribution. The second notebook reconstructs **Table S3**, which reports bounding-box precision and recall for grounded answer generation, and **Table S5**, which reports bounding-box precision and recall for answer locating.
+
+Each notebook automatically resolves the repository root, reads the corresponding JSON metric files from `output/metrics`, combines the PaperVISA and WikiVISA subsets into the VISA benchmark result, and reports the metrics following the model and dataset order used in the paper.
+
+The resulting tables are displayed as pandas dataframes and are also printed in LaTeX format.
